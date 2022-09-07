@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  nginx:
+    depends_on:
+      - api
+      - frontend
+    restart: unless-stopped
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+
+  frontend:
+    restart: unless-stopped
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+
+  mongo:
+    image: 'mongo:latest'
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DBNAME}
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  api:
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    environment:
+      - MONGODB_URL=mongodb://mongo/
+      - MONGODB_USER=${MONGO_USERNAME}
+      - MONGODB_PASS=${MONGO_PASSWORD}
+      - MONGODB_DBNAME=${MONGO_DBNAME}
