@@ -1,6 +1,4 @@
 version: '3.8'
-volumes:
-  frontend-node-modules:
 
 services:
   nginx:
@@ -19,15 +17,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-      #args:
-      #  - UID=${UID:-1111}
-      #  - GID=${GID:-1111}
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/app
-      - frontend-node-modules:/app/node_modules
-      #- /app/node_modules
+      - ./frontend:/frontend
+      - /app/node_modules
 
   frontend-test:
     restart: unless-stopped
@@ -35,9 +29,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
     volumes:
-      - ./frontend:/app
-      - frontend-node-modules:/app/node_modules
-      #- /app/node_modules
+      - ./frontend:/frontend
+      - /app/node_modules
     command: ["npm", "test"]
 
   mongo:
@@ -64,8 +57,8 @@ services:
       context: ./api
       dockerfile: Dockerfile.dev
     volumes:
-      - /home/node/api/node_modules
-      - ./api:/home/node/api
+      - /api/node_modules
+      - ./api:/api
     environment:
       - MONGODB_URL=mongodb://mongo/
       - MONGODB_USER=${MONGO_USERNAME:-devuser}
@@ -73,7 +66,3 @@ services:
       - MONGODB_DBNAME=${MONGO_DBNAME:-TodoDB}
     ports:
       - "5000:5000"
-
-  #devenv:
-  #  restart: unless-stopped
-  #  image: ubuntu:latest

@@ -1,22 +1,6 @@
-#FROM node:alpine
-#
-#ARG UID=1111
-#ARG GID=1111
-#
-#RUN if id ${GID} &>/dev/null; then addgroup -g ${GID} docker; fi
-#RUN if id ${UID} &>/dev/null; then adduser -u ${UID} -D -G ${GID} docker; fi
-#
-#USER ${UID}
-#
-#WORKDIR /app
-#COPY --chown=${UID}:${GID} ./package.json .
-#RUN npm install
-#COPY --chown=${UID}:${GID} . .
-#CMD ["npm", "start"]
-
 FROM node:18-bullseye
 USER node
-WORKDIR /app
+WORKDIR /frontend
 COPY --chown=node:node ./package.json .
 RUN npm install
 COPY --chown=node:node . .
