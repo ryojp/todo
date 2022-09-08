@@ -1,28 +1,3 @@
-# Usage
-## Add a New Package
-
-### Method 1 (Directly append to `package.json`)
-
-### Method 2 (Using `npm install` command)
-On an assumption that you are bind-mounting this (`frontend`) directory using the ways described below, you can install a new package as follows.
-- Copy the container ID of `frontend` image from `docker ps`.
-- Run `docker exec -it {container ID} sh` to dive into the shell inside the container.
-- Inside that shell, run `npm install {desired_package_name}` to install dependencies in the container.
-  - This also updates the `package.json` file on the host through bind mounting.
-  - Therefore, when you stop the container and run it again, you will probably want to rebuild the image beforehand.
-
-## How to Run the App in a Development Environment
-
-### Using Docker Compose
-- On the parent directory (project root dir), run `docker-compose -f docker-compose-dev.yml up --build`
-  - `--build` option is only necessary if you want to rebuild images using the Dockerfiles.
-  - This command sets up a real-time test environment as well.
-
-### Using Docker Commands
-- Build the image first by running `docker build -f Dockerfile.dev -t <some_tag> .`
-- Start a container using the built image `docker run -p 3000:3000 -v /home/node/app/node_modules -v $(pwd):/home/node/app -t <some_tag>`
-
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
