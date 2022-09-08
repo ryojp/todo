@@ -46,6 +46,8 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+    volumes:
+      - ./mongo_data:/data/db
 
   api:
     depends_on:
