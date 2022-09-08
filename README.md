@@ -22,3 +22,10 @@ This is because `/frontend` directory is where all the source codes are placed (
 
 Other containers can be used similarly.
 For example, to work on `api` container, you need to replace `frontend` with `api` in files in `.devcontainer/` and then `Open Folder` to select `/api` directory.
+
+## Production
+### Using Docker-Compose
+Once you have prepared environment variables used in `docker-compose.yml` (through target service's VAR option or `.env` file), you are ready to start the production-ready server with `docker-compose up --build`.  
+Major differences from the dev version are:
+- No bind mounts (because hot-reload is unnecessary in production).
+- No `frontend-test` container.
