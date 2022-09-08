@@ -4,7 +4,7 @@ services:
     depends_on:
       - api
       - frontend
-    restart: unless-stopped
+    restart: always
     build:
       context: ./nginx
       dockerfile: Dockerfile
@@ -12,7 +12,7 @@ services:
       - "80:80"
 
   frontend:
-    restart: unless-stopped
+    restart: always
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -21,7 +21,7 @@ services:
 
   mongo:
     image: 'mongo:latest'
-    restart: unless-stopped
+    restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
@@ -39,7 +39,7 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
-    restart: unless-stopped
+    restart: always
     build:
       context: ./api
       dockerfile: Dockerfile
