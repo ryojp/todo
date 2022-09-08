@@ -1,4 +1,6 @@
 version: '3.8'
+volumes:
+  mongo_data_dev:
 
 services:
   nginx:
@@ -48,7 +50,7 @@ services:
       retries: 5
       start_period: 30s
     volumes:
-      - ./mongo_data_dev:/data/db
+      - mongo_data_dev:/data/db
 
   api:
     depends_on:
