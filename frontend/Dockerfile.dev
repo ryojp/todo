@@ -1,4 +1,4 @@
-FROM node:18-bullseye
+FROM node:lts-slim
 USER node
 WORKDIR /frontend
 COPY --chown=node:node ./package.json .
