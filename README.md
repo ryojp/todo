@@ -7,7 +7,7 @@ Makefile provides shortcuts for development commands.
 - `make up` to start a dev environment *without* building images.
 - `make down` to stop the dev environment.
 
-After the dev environment starts up, the frontend client listens requests at `http://localhost` (port 80) and the API server accepts requests on port 5000.
+After the dev environment starts up, the frontend client listens requests at `http://localhost:8080` and the API server accepts requests at `http://localhost:5000`.
 
 ## Development using VSCode Remote Containers Extension
 For VSCode users, Remote Containers extension is very useful.
@@ -23,9 +23,17 @@ This is because `/frontend` directory is where all the source codes are placed (
 Other containers can be used similarly.
 For example, to work on `api` container, you need to replace `frontend` with `api` in files in `.devcontainer/` and then `Open Folder` to select `/api` directory.
 
-## Production
+## Deployment
 ### Using Docker-Compose
 Once you have prepared environment variables used in `docker-compose-prod.yml` (through target service's VAR option or `.env` file), you are ready to start the production-ready server with `docker-compose -f docker-compose-prod.yml up --build`.  
 Major differences from the dev version are:
 - No bind mounts (because hot-reload is unnecessary in production).
 - No `frontend-test` container.
+
+### Using Kubernetes
+0. Build Docker images and push them to the Docker Hub (`make build` would do this).
+1. Create MongoDB-related secret with: `kubectl create secret generic mongoinfo --from-env-file {env_file_name}`
+2. Install NGINX Ingress Controller with `kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.1/deploy/static/provider/cloud/deploy.yaml`
+    - Installation instruction is available [here](https://kubernetes.github.io/ingress-nginx/deploy/).
+    - Some cloud platforms (such as [Okteto Cloud](https://www.okteto.com/)) have their own Ingress controller, so installation on such platforms is not required.
+3. Apply Kubernetes configuration files with: `kubectl apply -f k8s/`.

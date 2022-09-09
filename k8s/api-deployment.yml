@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: api
+  template:
+    metadata:
+      labels:
+        component: api
+    spec:
+      containers:
+        - name: api
+          image: keikekke/todo-api
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGODB_URL
+              value: mongodb://mongo-cluster-ip-service/
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongoinfo
+                  key: MONGO_USERNAME
+            - name: MONGODB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mongoinfo
+                  key: MONGO_PASSWORD
+            - name: MONGODB_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongoinfo
+                  key: MONGO_DBNAME
