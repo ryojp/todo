@@ -70,4 +70,4 @@ services:
       - MONGODB_PASS=${MONGO_PASSWORD:-somepass}
       - MONGODB_DBNAME=${MONGO_DBNAME:-TodoDB}
     ports:
-      - "5000:5000"
+      - "5001:5000"
