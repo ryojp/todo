@@ -1,0 +1,4 @@
+deploy:
+  - okteto build -t okteto.dev/todo-api:latest -t okteto.dev/todo-api:${OKTETO_GIT_COMMIT} api
+  - okteto build -t okteto.dev/todo-frontend:latest -t okteto.dev/todo-frontend:${OKTETO_GIT_COMMIT} frontend
+  - kubectl apply -f k8s
