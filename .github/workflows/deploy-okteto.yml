@@ -1,0 +1,29 @@
+name: Deploy to Okteto Cloud
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: $cron-daily
+  push:
+    branches: [ $default-branch ]
+  pull-request:
+    branches: [ $default-branch ]
+jobs:
+  Deployment-Using-Okteto-Pipeline:
+    - name: Checkout the most recent commit on this branch
+      uses: actions/checkout@v3
+
+    - name: Set up Okteto context
+      uses: okteto/context@latest
+      with:
+        token: ${{ secrets.OKTETO_TOKEN }}
+
+    - name: Activate namespace
+      uses: okteto/namespace@latest
+      with:
+        name: keikekke
+
+    - name: Trigger the pipeline
+      uses: okteto/pipeline@latest
+      with:
+        name: pr-${{ github.event.number }}
+        timeout: 8m
