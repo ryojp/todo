@@ -9,21 +9,23 @@ on:
     branches: [ master ]
 jobs:
   Deployment-Using-Okteto-Pipeline:
-    - name: 'Checkout the most recent commit on this branch'
-      uses: actions/checkout@v3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the most recent commit on this branch
+        uses: actions/checkout@v3
 
-    - name: 'Set up Okteto context'
-      uses: okteto/context@latest
-      with:
-        token: ${{ secrets.OKTETO_TOKEN }}
+      - name: Set up Okteto context
+        uses: okteto/context@latest
+        with:
+          token: ${{ secrets.OKTETO_TOKEN }}
 
-    - name: 'Activate namespace'
-      uses: okteto/namespace@latest
-      with:
-        name: keikekke
+      - name: Activate namespace
+        uses: okteto/namespace@latest
+        with:
+          name: keikekke
 
-    - name: 'Trigger the pipeline'
-      uses: okteto/pipeline@latest
-      with:
-        name: pr-${{ github.event.number }}
-        timeout: 8m
+      - name: Trigger the pipeline
+        uses: okteto/pipeline@latest
+        with:
+          name: pr-${{ github.event.number }}
+          timeout: 8m
