@@ -4,9 +4,9 @@ on:
   schedule:
     - cron: $cron-daily
   push:
-    branches: [ $default-branch ]
-  pull-request:
-    branches: [ $default-branch ]
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 jobs:
   Deployment-Using-Okteto-Pipeline:
     - name: Checkout the most recent commit on this branch
