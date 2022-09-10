@@ -2,7 +2,7 @@ name: Deploy to Okteto Cloud
 on:
   workflow_dispatch:
   schedule:
-    - cron: $cron-daily
+    - cron: '10 18 * * *'  # 18:10 every day (UTC)
   push:
     branches: [ master ]
   pull_request:
