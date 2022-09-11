@@ -23,5 +23,5 @@ jobs:
       - name: Trigger the pipeline
         uses: okteto/pipeline@latest
         with:
-          name: preview
+          name: todo
           timeout: 8m
