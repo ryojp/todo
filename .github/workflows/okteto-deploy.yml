@@ -5,8 +5,6 @@ on:
     - cron: '10 18 * * *'  # 18:10 every day (UTC)
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 jobs:
   Deployment-Using-Okteto-Pipeline:
     runs-on: ubuntu-latest
@@ -27,5 +25,5 @@ jobs:
       - name: Trigger the pipeline
         uses: okteto/pipeline@latest
         with:
-          name: pr-${{ github.event.number }}
+          name: todo
           timeout: 8m

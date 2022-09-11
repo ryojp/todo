@@ -15,11 +15,13 @@ jobs:
         with:
           token: ${{ secrets.OKTETO_TOKEN }}
 
-      - name: Deploy preview environment
-        uses: okteto/deploy-preview@latest
-        env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Activate namespace
+        uses: okteto/namespace@latest
         with:
-          name: pr-${{ github.event.number }}-keikekke
-          scope: personal
-          timeout: 15m
+          namespace: preview-todo-keikekke
+
+      - name: Trigger the pipeline
+        uses: okteto/pipeline@latest
+        with:
+          name: preview
+          timeout: 8m
