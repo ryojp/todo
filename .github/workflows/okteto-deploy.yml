@@ -22,7 +22,7 @@ jobs:
       - name: Activate namespace
         uses: okteto/namespace@latest
         with:
-          name: keikekke
+          namespace: keikekke
 
       - name: Trigger the pipeline
         uses: okteto/pipeline@latest

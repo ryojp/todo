@@ -1,0 +1,25 @@
+name: Preview on Okteto Cloud
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ master ]
+jobs:
+  Preview-Okteto:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the most recent commit on this branch
+        uses: actions/checkout@v3
+
+      - name: Set up Okteto context
+        uses: okteto/context@latest
+        with:
+          token: ${{ secrets.OKTETO_TOKEN }}
+
+      - name: Deploy preview environment
+        uses: okteto/deploy-preview@latest
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: pr-${{ github.event.number }}-keikekke
+          scope: personal
+          timeout: 15m
