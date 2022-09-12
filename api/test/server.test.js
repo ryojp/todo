@@ -16,7 +16,7 @@ describe("Test /tasks endpoints", () => {
         pass: "testpass",
       })
       .catch((err) => {
-        console.log("Error connecting to the database\n" + err);
+        console.log(`Error connecting to the database\n${err}`);
       });
   });
 

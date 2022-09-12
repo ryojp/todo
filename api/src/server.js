@@ -20,10 +20,9 @@ mongoose
     console.log("Successfully connected to the database");
   })
   .catch((err) => {
-    console.log("Error connecting to the database\n" + err);
+    console.log(`Error connecting to the database\n${err}`);
   });
 
-
 app.listen(port, () => {
-  console.log("Todo list RESTful API server listening on: " + port);
+  console.log(`Todo list RESTful API server listening on: ${port}`);
 });
