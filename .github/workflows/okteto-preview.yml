@@ -23,5 +23,5 @@ jobs:
       - name: Trigger the pipeline
         uses: okteto/pipeline@latest
         with:
-          name: todo
+          name: pr-${{ github.event.number }}
           timeout: 8m
