@@ -71,3 +71,11 @@ services:
       - MONGODB_DBNAME=${MONGO_DBNAME:-TodoDB}
     ports:
       - "5001:5000"
+
+  mongo-test:
+    image: 'mongo:latest'
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=testuser
+      - MONGO_INITDB_ROOT_PASSWORD=testpass
+      - MONGO_INITDB_DATABASE=TestDB
