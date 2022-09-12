@@ -79,3 +79,23 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=testuser
       - MONGO_INITDB_ROOT_PASSWORD=testpass
       - MONGO_INITDB_DATABASE=TestDB
+    healthcheck:
+      #test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      test: 'sleep 3'
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  api-test:
+    depends_on:
+      mongo-test:
+        condition: service_healthy
+    restart: always
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /api/node_modules
+      - ./api:/api
+    command: ["npm", "test"]

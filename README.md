@@ -28,7 +28,7 @@ For example, to work on `api` container, you need to replace `frontend` with `ap
 Once you have prepared environment variables used in `docker-compose-prod.yml` (through target service's VAR option or `.env` file), you are ready to start the production-ready server with `docker-compose -f docker-compose-prod.yml up --build`.  
 Major differences from the dev version are:
 - No bind mounts (because hot-reload is unnecessary in production).
-- No `frontend-test` container.
+- No test containers.
 
 ### Using Kubernetes
 0. Build Docker images and push them to the Docker Hub (`make build` would do this).
