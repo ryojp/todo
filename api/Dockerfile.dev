@@ -1,6 +1,7 @@
 FROM node:lts-slim
-USER node
 WORKDIR /api
+RUN chown $(id -u node):$(id -g node) $(pwd)
+USER node
 RUN chown $(id -u):$(id -g) $(pwd)
 COPY --chown=node:node ./package.json .
 RUN npm install
