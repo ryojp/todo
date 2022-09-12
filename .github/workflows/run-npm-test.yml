@@ -1,0 +1,24 @@
+name: Run Tests for Frontend and API
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+jobs:
+  Run-NPM-Test-For-Frontend-And-API:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the most recent commit on this branch
+        uses: actions/checkout@v3
+
+      - name: Build and start the dev env
+        uses: isbang/compose-action@v1.2.0
+        with:
+          compose-file: "./docker-compose-dev.yml"
+
+      - name: Test frontend
+        run: docker-compose -f docker-compose-dev.yml exec -T frontend npm test -- --watchAll=false
+
+      - name: Test api
+        run: docker-compose -f docker-compose-dev.yml exec -T api npm test -- --watchAll=false
