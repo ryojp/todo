@@ -31,9 +31,7 @@ describe("Test /tasks endpoints", () => {
   it("GET /tasks", async () => {
     const task = await Task.create({ name: "Example" });
 
-    await request(app)
-      .get("/tasks")
-      .expect(200)
+    await request(app) .get("/tasks") .expect(200)
       .then((response) => {
         // Check type and length
         expect(Array.isArray(response.body)).toBeTruthy();
