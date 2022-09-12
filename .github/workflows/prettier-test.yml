@@ -1,4 +1,4 @@
-name: Run Tests for Frontend and API
+name: Format Styles and Run Tests for Frontend and API
 on:
   workflow_dispatch:
   pull_request:
@@ -6,7 +6,7 @@ on:
   push:
     branches: [ master ]
 jobs:
-  Run-NPM-Test-For-Frontend-And-API:
+  Format-Styles-And-Run-NPM-Test-For-Frontend-And-API:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the most recent commit on this branch
