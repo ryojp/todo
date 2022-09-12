@@ -12,6 +12,9 @@ up:
 down:
 	docker-compose -f $(DOCKER_COMPOSE_CONF) down
 
+clean:
+	docker-compose -f $(DOCKER_COMPOSE_CONF) down --volumes
+
 build:
 	docker build -t $(DOCKER_USER)/$(APP_NAME)-api -t $(DOCKER_USER)/$(APP_NAME)-api:$(GIT_SHA) api; \
 	docker push $(DOCKER_USER)/$(APP_NAME)-api; \
