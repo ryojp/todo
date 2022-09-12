@@ -7,7 +7,7 @@ Makefile provides shortcuts for development commands.
 - `make up` to start a dev environment *without* building images.
 - `make down` to stop the dev environment.
 
-After the dev environment starts up, the frontend client listens requests at `http://localhost:8080` and the API server accepts requests at `http://localhost:5000`.
+After the dev environment starts up, the frontend client listens requests at `http://localhost:8080` and the API server accepts requests at `http://localhost:5001`.
 
 ## Development using VSCode Remote Containers Extension
 For VSCode users, Remote Containers extension is very useful.
@@ -37,3 +37,12 @@ Major differences from the dev version are:
     - Installation instruction is available [here](https://kubernetes.github.io/ingress-nginx/deploy/).
     - Some cloud platforms (such as [Okteto Cloud](https://www.okteto.com/)) have their own Ingress controller, so installation on such platforms is not required.
 3. Apply Kubernetes configuration files with: `kubectl apply -f k8s/`.
+
+#### Deployment on [Okteto Cloud](https://www.okteto.com/)
+Step-by-step instructions are as follows.
+- Install Okteto CLI (see [here](https://www.okteto.com/docs/getting-started/)).
+- Select the proper okteto context: `okteto context use https://cloud.okteto.com --namespace {{namespace_name}}`.
+- Download Kubernetes credentials (see [here](https://www.okteto.com/docs/cloud/credentials/)).
+    - This allows you to use your `kubectl` command in your terminal to manipulate k8s on Okteto.
+- Create MongoDB-related secret with: `kubectl create secret generic mongoinfo --from-env-file {env_file_name}`.
+- Run `okteto deploy`.
