@@ -31,7 +31,7 @@ describe("Test /tasks endpoints", () => {
   it("GET /tasks", async () => {
     const task = await Task.create({ name: "Example" });
 
-    await request(app)
+    return request(app)
       .get("/tasks")
       .expect(200)
       .then((response) => {
@@ -48,7 +48,7 @@ describe("Test /tasks endpoints", () => {
   it("POST /tasks", async () => {
     const data = { name: "Sample" };
 
-    const response = await request(app)
+    return request(app)
       .post("/tasks")
       .send(data)
       .expect(200)
@@ -67,7 +67,7 @@ describe("Test /tasks endpoints", () => {
   it("GET /tasks/:taskId", async () => {
     const task = await Task.create({ name: "Example" });
 
-    await request(app)
+    return request(app)
       .get(`/tasks/${task.id}`)
       .expect(200)
       .then(async (response) => {
@@ -82,7 +82,7 @@ describe("Test /tasks endpoints", () => {
 
     const data = { name: "Updated Name" };
 
-    await request(app)
+    return request(app)
       .put(`/tasks/${task.id}`)
       .send(data)
       .expect(200)
@@ -101,7 +101,7 @@ describe("Test /tasks endpoints", () => {
   it("DELETE /tasks/:taskId", async () => {
     const task = await Task.create({ name: "Example" });
 
-    await request(app)
+    return request(app)
       .delete(`/tasks/${task.id}`)
       .expect(200)
       .then(async () => {
@@ -109,3 +109,4 @@ describe("Test /tasks endpoints", () => {
       });
   });
 });
+
