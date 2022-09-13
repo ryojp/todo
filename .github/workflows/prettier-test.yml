@@ -18,10 +18,10 @@ jobs:
           compose-file: "./docker-compose-dev.yml"
 
       - name: Format style for frontend
-        run: docker-compose -f docker-compose-dev.yml exec -T frontend npm run format
+        run: docker-compose -f docker-compose-dev.yml exec -T --user 1000 frontend npm run format
 
       - name: Format style for api
-        run: docker-compose -f docker-compose-dev.yml exec -T api npm run format
+        run: docker-compose -f docker-compose-dev.yml exec -T --user 1000 api npm run format
 
       - name: Commit changes automatically
         uses: stefanzweifel/git-auto-commit-action@v4
