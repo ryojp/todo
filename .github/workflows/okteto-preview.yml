@@ -6,7 +6,7 @@ env:
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ $DEFAULT_BRANCH ]
+    branches: [ ${{ env.DEFAULT_BRANCH }} ]
 jobs:
   Preview-Okteto:
     runs-on: ubuntu-latest
@@ -22,10 +22,10 @@ jobs:
       - name: Activate namespace
         uses: okteto/namespace@latest
         with:
-          namespace: $NAMESPACE
+          namespace: ${{ env.NAMESPACE }}
 
       - name: Trigger the pipeline
         uses: okteto/pipeline@latest
         with:
-          name: $PIPELINE_RESULT_NAME
+          name: ${{ env.PIPELINE_RESULT_NAME }}
           timeout: 8m

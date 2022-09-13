@@ -8,7 +8,7 @@ on:
   schedule:
     - cron: '10 18 * * *'  # 18:10 every day (UTC)
   push:
-    branches: [ $DEFAULT_BRANCH ]
+    branches: [ ${{ env.DEFAULT_BRANCH }} ]
 jobs:
   Deployment-Using-Okteto-Pipeline:
     runs-on: ubuntu-latest
@@ -24,10 +24,10 @@ jobs:
       - name: Activate namespace
         uses: okteto/namespace@latest
         with:
-          namespace: $NAMESPACE
+          namespace: ${{ env.NAMESPACE }}
 
       - name: Trigger the pipeline
         uses: okteto/pipeline@latest
         with:
-          name: $PIPELINE_RESULT_NAME
+          name: ${{ env.PIPELINE_RESULT_NAME }}
           timeout: 8m

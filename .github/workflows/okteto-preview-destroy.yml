@@ -21,9 +21,9 @@ jobs:
       - name: "Activate Namespace"
         uses: okteto/namespace@latest
         with:
-            namespace: $NAMESPACE
+          namespace: ${{ env.NAMESPACE }}
 
       - name: "Destroy the pipeline"
         uses: okteto/destroy-pipeline@latest
         with:
-          name: $PIPELINE_RESULT_NAME
+          name: ${{ env.PIPELINE_RESULT_NAME }}
