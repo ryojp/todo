@@ -1,10 +1,14 @@
 name: Deploy to Okteto Cloud
+env:
+  DEFAULT_BRANCH: master
+  NAMESPACE: keikekke
+  PIPELINE_RESULT_NAME: todo
 on:
   workflow_dispatch:
   schedule:
     - cron: '10 18 * * *'  # 18:10 every day (UTC)
   push:
-    branches: [ master ]
+    branches: [ $DEFAULT_BRANCH ]
 jobs:
   Deployment-Using-Okteto-Pipeline:
     runs-on: ubuntu-latest
@@ -20,10 +24,10 @@ jobs:
       - name: Activate namespace
         uses: okteto/namespace@latest
         with:
-          namespace: keikekke
+          namespace: $NAMESPACE
 
       - name: Trigger the pipeline
         uses: okteto/pipeline@latest
         with:
-          name: todo
+          name: $PIPELINE_RESULT_NAME
           timeout: 8m
