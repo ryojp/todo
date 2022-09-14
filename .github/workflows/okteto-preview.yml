@@ -1,12 +1,8 @@
 name: Preview on Okteto Cloud
-env:
-  DEFAULT_BRANCH: master
-  NAMESPACE: preview-todo-keikekke
-  PIPELINE_RESULT_NAME: pr-${{ github.event.number }}
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ $DEFAULT_BRANCH ]
+    branches: [ master ]
 jobs:
   Preview-Okteto:
     runs-on: ubuntu-latest
@@ -22,10 +18,10 @@ jobs:
       - name: Activate namespace
         uses: okteto/namespace@latest
         with:
-          namespace: $NAMESPACE
+          namespace: preview-todo-keikekke
 
       - name: Trigger the pipeline
         uses: okteto/pipeline@latest
         with:
-          name: $PIPELINE_RESULT_NAME
+          name: pr-${{ github.event.number }}
           timeout: 8m
