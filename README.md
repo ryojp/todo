@@ -42,7 +42,9 @@ Major differences from the dev version are:
 Step-by-step instructions are as follows.
 - Install Okteto CLI (see [here](https://www.okteto.com/docs/getting-started/)).
 - Select the proper okteto context: `okteto context use https://cloud.okteto.com --namespace {{namespace_name}}`.
-- Download Kubernetes credentials (see [here](https://www.okteto.com/docs/cloud/credentials/)).
+- Download Kubernetes credentials (see [here](https://www.okteto.com/docs/cloud/credentials/)) and store it to `~/.kube/config`.
+- Export `KUBECONFIG` variable: `export KUBECONFIG=$HOME/okteto-kube.config:${KUBECONFIG:-$HOME/.kube/config}`.
+- Run `okteto kubeconfig`.
     - This allows you to use your `kubectl` command in your terminal to manipulate k8s on Okteto.
 - Create MongoDB-related secret with: `kubectl create secret generic mongoinfo --from-env-file {env_file_name}`.
 - Run `okteto deploy`.
