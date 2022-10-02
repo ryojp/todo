@@ -43,4 +43,4 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Run `git pull` and `docker compose up` over SSH
-        run: ssh ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git pull; docker compose -f docker-compose-prod.yml up -d"
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git pull; docker compose -f docker-compose-prod.yml up -d"
