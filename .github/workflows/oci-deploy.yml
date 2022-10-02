@@ -19,4 +19,4 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Build images and start up containers using docker-compose over SSH
-        run: ssh -i ~/.ssh/id_rsa ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git checkout main; git pull; docker compose -f docker-compose-prod.yml build; docker compose -f docker-compose-prod.yml down; docker compose -f docker-compose-prod.yml up -d"
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git checkout main; git pull; docker compose -f docker-compose-prod.yml build; docker compose -f docker-compose-prod.yml down; nohup docker compose -f docker-compose-prod.yml up -d"
