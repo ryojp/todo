@@ -1,0 +1,38 @@
+name: Deploy to OCI (Oracle Cloud Infrastructure)
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the most recent commit on this branch
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v3
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/umbrella-frontend:latest,
+            ${{ secrets.DOCKERHUB_USERNAME }}/umbrella-frontend:${{ github.sha }}
+
+      - name: Build and push api
+        uses: docker/build-push-action@v3
+        with:
+          context: ./api
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/umbrella-api:latest,
+            ${{ secrets.DOCKERHUB_USERNAME }}/umbrella-api:${{ github.sha }}
+
+      - name: Run `git pull` and `docker compose up` over SSH
+        run: ssh -i ${{ secrets.OCI_KEYFILE }} ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git pull; docker compose -f docker-compose-prod.yml up -d"
