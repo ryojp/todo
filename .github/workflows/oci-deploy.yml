@@ -10,30 +10,6 @@ jobs:
       - name: Checkout the most recent commit on this branch
         uses: actions/checkout@v3
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push frontend
-        uses: docker/build-push-action@v3
-        with:
-          context: ./frontend
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/umbrella-frontend:latest,
-            ${{ secrets.DOCKERHUB_USERNAME }}/umbrella-frontend:${{ github.sha }}
-
-      - name: Build and push api
-        uses: docker/build-push-action@v3
-        with:
-          context: ./api
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/umbrella-api:latest,
-            ${{ secrets.DOCKERHUB_USERNAME }}/umbrella-api:${{ github.sha }}
-
       - name: Set up ssh
         run: |
           mkdir -p ~/.ssh/
@@ -42,5 +18,5 @@ jobs:
           echo "${{ secrets.OCI_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Run `git pull` and `docker compose up` over SSH
-        run: ssh -i ~/.ssh/id_rsa ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git pull; docker compose -f docker-compose-prod.yml up -d"
+      - name: Build images and start up containers using docker-compose over SSH
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git checkout main; git pull; docker compose -f docker-compose-prod.yml build; docker compose -f docker-compose-prod.yml down; docker compose -f docker-compose-prod.yml up -d"
