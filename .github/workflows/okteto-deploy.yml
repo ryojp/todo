@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '10 18 * * *'  # 18:10 every day (UTC)
   push:
-    branches: [ master ]
+    branches: [ main ]
 jobs:
   Deployment-Using-Okteto-Pipeline:
     runs-on: ubuntu-latest
