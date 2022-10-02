@@ -17,7 +17,7 @@ const App = () => {
       .get("/tasks")
       .then((response) => {
         setTasks(response.data);
-        console.log(response.data)
+        console.log(response.data);
       })
       .catch((err) => {
         setError(err);
@@ -40,16 +40,37 @@ const App = () => {
       });
   };
 
+  // Handler for Edit button.
+  const editTaskHandler = (task) => {
+    // send PUT request and update the task upon receiving a response
+    console.log("trying to edit: ");
+    console.log(task);
+    client
+      .put(`/tasks/${task._id}`, task)
+      .then((response) => {
+        console.log(response);
+        setTasks((prevTasks) => {
+          return prevTasks.map((elem) => {
+            if (elem._id !== task._id) return elem;
+            else return task;
+          });
+        });
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
   // Handler for Delete button.
   const deleteTaskHandler = (task) => {
     // send DELETE request and delete the task up on reception from backend DB
-    console.log('trying to delete: ')
-    console.log(task)
+    console.log("trying to delete: ");
+    console.log(task);
     client
       .delete(`/tasks/${task._id}`)
       .then((response) => {
         setTasks((prevTasks) => {
-          return prevTasks.filter((elem) => elem._id !== task._id)
+          return prevTasks.filter((elem) => elem._id !== task._id);
         });
       })
       .catch((err) => {
@@ -64,7 +85,11 @@ const App = () => {
   return (
     <div>
       <NewTask onAddTask={addTaskHandler} />
-      <TaskList tasks={tasks} onDeleteTask={deleteTaskHandler} />
+      <TaskList
+        tasks={tasks}
+        onDeleteTask={deleteTaskHandler}
+        onEditTask={editTaskHandler}
+      />
     </div>
   );
 };

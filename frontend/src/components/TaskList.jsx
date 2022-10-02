@@ -15,7 +15,7 @@ const TaskList = (props) => {
     <Container maxWidth="sm" sx={{ pt: 5 }}>
       <List>
         {props.tasks.map((task) => {
-          return <TaskItem key={task._id} task={task} onDelete={props.onDeleteTask} />;
+          return <TaskItem key={task._id} task={task} onDelete={props.onDeleteTask} onEdit={props.onEditTask} />;
         })}
       </List>
     </Container>
