@@ -3,7 +3,12 @@ import { Container, Stack } from "@mui/system";
 import { useForm } from "react-hook-form";
 
 const TaskForm = (props) => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
+
+  const submitHandler = () => {
+    handleSubmit(props.onSubmit)();
+    reset({ name: "" });
+  }
 
   return (
     <Container maxWidth="sm" sx={{ pt: 5 }}>
@@ -12,7 +17,7 @@ const TaskForm = (props) => {
         <Button
           variant="contained"
           size="large"
-          onClick={handleSubmit(props.onSubmit)}
+          onClick={submitHandler}
         >
           Add Task
         </Button>
