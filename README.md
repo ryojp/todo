@@ -1,5 +1,6 @@
 # Todo App
-A simple Todo app with React.js + Express.js + MongoDB.  
+A simple Todo app with React.js + Node.js + MongoDB.  
+Demo is available at [https://todo.keikr.com](https://todo.keikr.com)  
 
 ## How to Run (Using Makefile)
 Makefile provides shortcuts for development commands.
