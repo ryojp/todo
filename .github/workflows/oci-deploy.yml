@@ -37,9 +37,9 @@ jobs:
       - name: Set up ssh
         run: |
           mkdir -p ~/.ssh/
-          cat ${{ secrets.OCI_KEYFILE }} > ~/.ssh/id_rsa
+          echo ${{ secrets.OCI_KEYFILE }} > ~/.ssh/id_rsa
           chmod 400 ~/.ssh/id_rsa
-          cat ${{ secrets.OCI_KNOWN_HOSTS }} > ~/.ssh/known_hosts
+          echo ${{ secrets.OCI_KNOWN_HOSTS }} > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_rsa
 
       - name: Run `git pull` and `docker compose up` over SSH
