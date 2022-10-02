@@ -2,7 +2,7 @@ name: Preview on Okteto Cloud
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 jobs:
   Preview-Okteto:
     runs-on: ubuntu-latest
