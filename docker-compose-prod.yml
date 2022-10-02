@@ -1,18 +1,34 @@
 version: '3.8'
 volumes:
   mongo_data:
+  certificates:
 
 services:
   nginx:
     depends_on:
-      - api
-      - frontend
+      certs:
+        condition: service_completed_successfully
+      api:
+        condition: service_started
+      frontend:
+        condition: service_started
     restart: always
     build:
       context: ./nginx
       dockerfile: Dockerfile
+    volumes:
+      -  certificates:/etc/ssl/certs/nginx:ro,cached
     ports:
-      - "80:80"
+      - "443:443"
+
+  certs:
+    build:
+      context: ./certs
+      dockerfile: Dockerfile
+    environment:
+      DOMAIN: example.local
+    volumes:
+      - certificates:/app:delegated
 
   frontend:
     restart: always
