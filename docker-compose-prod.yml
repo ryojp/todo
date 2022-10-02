@@ -28,7 +28,8 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_DBNAME}
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      #test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      test: 'sleep 3'
       interval: 10s
       timeout: 10s
       retries: 5
