@@ -11,8 +11,12 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
+    volumes:
+      -  /etc/letsencrypt/live/${DOMAIN}/fullchain.pem:/domain/fullchain.pem:ro
+      -  /etc/letsencrypt/live/${DOMAIN}/privkey.pem:/domain/privkey.pem:ro
+
     ports:
-      - "80:80"
+      - "443:443"
 
   frontend:
     restart: always
