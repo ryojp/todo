@@ -45,6 +45,7 @@ const TaskItem = (props) => {
             label="New Task Name"
             defaultValue={props.task.name}
             {...register("name")}
+            style={{minWidth: '80%'}}
           />
           <Button
             onClick={handleSubmit(endEditing)}
