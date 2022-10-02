@@ -34,5 +34,13 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/umbrella-api:latest,
             ${{ secrets.DOCKERHUB_USERNAME }}/umbrella-api:${{ github.sha }}
 
+      - name: Set up ssh
+        run: |
+          mkdir -p ~/.ssh/
+          cat ${{ secrets.OCI_KEYFILE }} > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
+          cat ${{ secrets.OCI_KNOWN_HOSTS }} > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_rsa
+
       - name: Run `git pull` and `docker compose up` over SSH
-        run: ssh -i ${{ secrets.OCI_KEYFILE }} ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git pull; docker compose -f docker-compose-prod.yml up -d"
+        run: ssh ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git pull; docker compose -f docker-compose-prod.yml up -d"
