@@ -28,7 +28,7 @@ const TaskItem = (props) => {
 
   const endEditing = (data) => {
     const new_task_name = data.name;
-    if (new_task_name != props.task.name) {
+    if (new_task_name !== props.task.name) {
       // only if the name changes
       console.log(data);
       props.onEdit({ ...props.task, name: new_task_name });
