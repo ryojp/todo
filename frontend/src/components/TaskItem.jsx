@@ -39,18 +39,15 @@ const TaskItem = (props) => {
   if (editing) {
     return (
       <Card>
-        <ListItem>
+        <ListItem component="form" onSubmit={handleSubmit(endEditing)}>
           <TextField
             required
             label="New Task Name"
             defaultValue={props.task.name}
-            {...register("name")}
-            style={{minWidth: '80%'}}
+            {...register("name", { required: true })}
+            style={{ minWidth: "80%" }}
           />
-          <Button
-            onClick={handleSubmit(endEditing)}
-            style={{ minWidth: "0px" }}
-          >
+          <Button type="submit" style={{ minWidth: "0px" }}>
             <ListItemIcon style={{ minWidth: "0px" }}>
               <CheckIcon />
             </ListItemIcon>

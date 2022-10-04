@@ -5,20 +5,21 @@ import { useForm } from "react-hook-form";
 const TaskForm = (props) => {
   const { register, handleSubmit, reset } = useForm();
 
-  const submitHandler = () => {
+  const submitHandler = (event) => {
+    event.preventDefault(); // prevent page refresh
     handleSubmit(props.onSubmit)();
     reset({ name: "" });
-  }
+  };
 
   return (
     <Container maxWidth="sm" sx={{ pt: 5 }}>
-      <Stack spacing={3}>
-        <TextField required label="Task Name" {...register("name")} />
-        <Button
-          variant="contained"
-          size="large"
-          onClick={submitHandler}
-        >
+      <Stack component="form" onSubmit={submitHandler} spacing={3}>
+        <TextField
+          required
+          label="Task Name"
+          {...register("name", { required: true })}
+        />
+        <Button type="submit" variant="contained" size="large">
           Add Task
         </Button>
       </Stack>

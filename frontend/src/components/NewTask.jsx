@@ -5,7 +5,6 @@ const NewTask = (props) => {
     <div>
       <TaskForm
         onSubmit={(enteredTaskData) => {
-          console.log(enteredTaskData);
           props.onAddTask(enteredTaskData);
         }}
       />

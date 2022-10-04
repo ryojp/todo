@@ -31,6 +31,10 @@ const App = () => {
     client
       .post("/tasks", task)
       .then((response) => {
+        if (response.data.error !== undefined && response.data.error !== "") {
+          alert(`Error from server: ${response.data.error}`);
+          return;
+        }
         setTasks((prevTasks) => {
           return [...prevTasks, response.data];
         });

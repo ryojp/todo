@@ -11,7 +11,16 @@ exports.all_tasks = (req, res) => {
 
 // Create a new task
 exports.create_task = (req, res) => {
-  const new_task = new Task(req.body);
+  const body = req.body;
+  body.name = body.name.trim(); // just in case
+
+  // verify non-emptiness
+  if (body.name === "") {
+    res.json({ error: "Task name should not be empty!" });
+    return;
+  }
+
+  const new_task = new Task(body);
   new_task.save((err, task) => {
     if (err) res.send(err);
     res.json(task);
@@ -28,9 +37,18 @@ exports.get_task = (req, res) => {
 
 // Update the task with the given ID
 exports.update_task = (req, res) => {
+  const body = req.body;
+  body.name = body.name.trim(); // just in case
+
+  // verify non-emptiness
+  if (body.name === "") {
+    res.json({ error: "Task name should not be empty!" });
+    return;
+  }
+
   Task.findOneAndUpdate(
     { _id: req.params.taskId },
-    req.body,
+    body,
     { new: true },
     (err, task) => {
       if (err) res.send(err);
