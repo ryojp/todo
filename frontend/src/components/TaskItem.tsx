@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Button,
   Card,
@@ -13,9 +14,21 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-const TaskItem = (props) => {
+import { TaskType } from "./taskTypes";
+
+type PropsType = {
+  task: TaskType;
+  onDelete: (task: TaskType) => void;
+  onEdit: (task: TaskType) => void;
+};
+
+type FormValues = {
+  name: string;
+};
+
+const TaskItem: React.FC<PropsType> = (props) => {
   const [editing, setEditing] = useState(false);
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm<FormValues>();
 
   const startEditing = () => {
     setEditing(true);
@@ -26,7 +39,7 @@ const TaskItem = (props) => {
     reset({ name: props.task.name });
   };
 
-  const endEditing = (data) => {
+  const endEditing = (data: FormValues) => {
     const new_task_name = data.name;
     if (new_task_name !== props.task.name) {
       // only if the name changes
