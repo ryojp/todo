@@ -1,8 +1,8 @@
 import { Schema, model, Document } from "mongoose";
 
 interface ITask {
-  name: string
-  Created_date: string
+  name: string;
+  Created_date: string;
 }
 
 export interface ITaskDoc extends Document, ITask {}
