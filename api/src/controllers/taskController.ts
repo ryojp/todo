@@ -1,16 +1,17 @@
-const mongoose = require("mongoose");
-const Task = mongoose.model("Tasks");
+import Task, { ITaskDoc } from "../models/taskModel";
+import { Request, Response } from "express";
+import { CallbackError } from "mongoose";
 
 // Fetch all the tasks
-exports.all_tasks = (req, res) => {
-  Task.find({}, (err, task) => {
+export const all_tasks = (_: Request, res: Response) => {
+  Task.find({}, (err: CallbackError, doc: ITaskDoc) => {
     if (err) res.send(err);
-    res.json(task);
+    res.json(doc);
   });
 };
 
 // Create a new task
-exports.create_task = (req, res) => {
+export const create_task = (req: Request, res: Response) => {
   const body = req.body;
   body.name = body.name.trim(); // just in case
 
@@ -28,15 +29,15 @@ exports.create_task = (req, res) => {
 };
 
 // Get the task with the given ID
-exports.get_task = (req, res) => {
-  Task.findById(req.params.taskId, (err, task) => {
+export const get_task = (req: Request, res: Response) => {
+  Task.findById(req.params.taskId, (err: CallbackError, doc: ITaskDoc) => {
     if (err) res.send(err);
-    res.json(task);
+    res.json(doc);
   });
 };
 
 // Update the task with the given ID
-exports.update_task = (req, res) => {
+export const update_task = (req: Request, res: Response) => {
   const body = req.body;
   body.name = body.name.trim(); // just in case
 
@@ -58,8 +59,8 @@ exports.update_task = (req, res) => {
 };
 
 // Delete the task with the given ID
-exports.delete_task = (req, res) => {
-  Task.remove({ _id: req.params.taskId }, (err, task) => {
+export const delete_task = (req: Request, res: Response) => {
+  Task.remove({ _id: req.params.taskId }, (err) => {
     if (err) res.send(err);
     res.json({ message: "Successfully deleted the task" });
   });
