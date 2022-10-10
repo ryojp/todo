@@ -1,8 +1,7 @@
-const mongoose = require("mongoose");
-const request = require("supertest");
-
-const Task = require("../src/models/taskModel");
-const app = require("../src/app");
+import mongoose from "mongoose";
+import request from "supertest";
+import Task from "../src/models/taskModel";
+import app from "../src/app";
 
 describe("Test /tasks endpoints", () => {
   mongoose.Promise = global.Promise;
@@ -11,9 +10,9 @@ describe("Test /tasks endpoints", () => {
   beforeEach(async () => {
     await mongoose
       .connect("mongodb://mongo-test/", {
-        auth: { authSource: "TestDB" },
         user: "testuser",
         pass: "testpass",
+        dbName: "TestDB",
       })
       .catch((err) => {
         console.log("Error connecting to the database\n" + err);
@@ -22,7 +21,7 @@ describe("Test /tasks endpoints", () => {
 
   // drop MongoDB and close connection after running each test case
   afterEach((done) => {
-    Task.remove({}, async (err) => {
+    Task.remove({}, async () => {
       await mongoose.disconnect();
       done();
     });
@@ -60,7 +59,7 @@ describe("Test /tasks endpoints", () => {
         // Check data in the database
         const task = await Task.findOne({ _id: response.body._id });
         expect(task).toBeTruthy();
-        expect(task.name).toBe(data.name);
+        expect(task?.name).toBe(data.name);
       });
   });
 
@@ -94,7 +93,7 @@ describe("Test /tasks endpoints", () => {
         // Check the data in the database
         const newtask = await Task.findOne({ _id: response.body._id });
         expect(newtask).toBeTruthy();
-        expect(newtask.name).toBe(data.name);
+        expect(newtask?.name).toBe(data.name);
       });
   });
 
@@ -109,4 +108,3 @@ describe("Test /tasks endpoints", () => {
       });
   });
 });
-

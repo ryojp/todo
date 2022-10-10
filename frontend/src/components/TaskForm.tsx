@@ -1,11 +1,22 @@
+import React from "react";
 import { Button, TextField } from "@mui/material";
 import { Container, Stack } from "@mui/system";
 import { useForm } from "react-hook-form";
 
-const TaskForm = (props) => {
-  const { register, handleSubmit, reset } = useForm();
+import { TaskType } from "./taskTypes";
 
-  const submitHandler = (event) => {
+type PropsType = {
+  onSubmit: (task: TaskType) => void;
+};
+
+type FormValues = {
+  name: string;
+}
+
+const TaskForm: React.FC<PropsType> = (props) => {
+  const { register, handleSubmit, reset } = useForm<FormValues>();
+
+  const submitHandler = (event: React.FormEvent) => {
     event.preventDefault(); // prevent page refresh
     handleSubmit(props.onSubmit)();
     reset({ name: "" });
