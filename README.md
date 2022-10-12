@@ -6,8 +6,6 @@ This repository also hosts configuration files for GitHub Actions such as
 - create a preview page in Okteto Cloud
 - deploy the stable code in `main` branch on merging pull-requests
 
-Demo is available at [https://todo.keikr.com](https://todo.keikr.com)  
-
 ## How to Run (using Makefile)
 Makefile provides shortcuts for development commands.
 - `make` or `make up_build` to start a dev environment after building images.
