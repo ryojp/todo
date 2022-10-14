@@ -63,6 +63,7 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - /api/node_modules
+      - /api/dist
       - ./api:/api
     environment:
       - MONGODB_URL=mongodb://mongo/
@@ -97,5 +98,6 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - /api/node_modules
+      - /api/dist
       - ./api:/api
     command: ["npm", "test"]
