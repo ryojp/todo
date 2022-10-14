@@ -60,7 +60,7 @@ export const update_task = (req: Request, res: Response) => {
 
 // Delete the task with the given ID
 export const delete_task = (req: Request, res: Response) => {
-  Task.remove({ _id: req.params.taskId }, (err) => {
+  Task.deleteOne({ _id: req.params.taskId }, (err) => {
     if (err) res.send(err);
     res.json({ message: "Successfully deleted the task" });
   });

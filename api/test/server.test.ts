@@ -21,7 +21,7 @@ describe("Test /tasks endpoints", () => {
 
   // drop MongoDB and close connection after running each test case
   afterEach((done) => {
-    Task.remove({}, async () => {
+    Task.deleteMany({}, async () => {
       await mongoose.disconnect();
       done();
     });
