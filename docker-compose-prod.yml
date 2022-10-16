@@ -66,3 +66,5 @@ services:
       - MONGODB_USER=${MONGO_USERNAME}
       - MONGODB_PASS=${MONGO_PASSWORD}
       - MONGODB_DBNAME=${MONGO_DBNAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_ENV=production

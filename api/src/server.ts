@@ -1,13 +1,9 @@
 import mongoose from "mongoose";
 
 import app from "./app";
+import { mongoURL, mongoUser, mongoPass, mongoDBName } from "./env";
 
 const port = 5000;
-
-const mongoURL = process.env.MONGODB_URL || "";
-const mongoUser = process.env.MONGODB_USER || "";
-const mongoPass = process.env.MONGODB_PASS || "";
-const mongoDBName = process.env.MONGODB_DBNAME || "";
 
 mongoose.Promise = global.Promise;
 mongoose

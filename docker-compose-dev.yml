@@ -56,7 +56,6 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
-
     restart: always
     build:
       context: ./api
@@ -70,6 +69,8 @@ services:
       - MONGODB_USER=${MONGO_USERNAME:-devuser}
       - MONGODB_PASS=${MONGO_PASSWORD:-somepass}
       - MONGODB_DBNAME=${MONGO_DBNAME:-TodoDB}
+      - JWT_SECRET=${JWT_SECRET:-jwtsecret}
+      - NODE_ENV=${NODE_ENV:-development}
     ports:
       - "5001:5000"
 

@@ -6,8 +6,18 @@ import {
   update_task,
   delete_task,
 } from "../controllers/taskController";
+import {
+  authenticate,
+  createUser,
+  verifyToken,
+} from "../controllers/userController";
 
 const routes = (app: Express) => {
+  app.post("/signup", createUser);
+  app.post("/login", authenticate);
+
+  app.use(verifyToken);
+
   app.route("/tasks").get(all_tasks).post(create_task);
 
   app
