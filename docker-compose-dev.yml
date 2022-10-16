@@ -70,7 +70,7 @@ services:
       - MONGODB_PASS=${MONGO_PASSWORD:-somepass}
       - MONGODB_DBNAME=${MONGO_DBNAME:-TodoDB}
       - JWT_SECRET=${JWT_SECRET:-jwtsecret}
-      - NODE_ENV=${NODE_ENV:-development}
+      - NODE_ENV=development
     ports:
       - "5001:5000"
 
@@ -101,4 +101,11 @@ services:
       - /api/node_modules
       - /api/dist
       - ./api:/api
+    environment:
+      - MONGODB_URL=mongodb://mongo-test/
+      - MONGODB_USER=testuser
+      - MONGODB_PASS=testpass
+      - MONGODB_DBNAME=TestDB
+      - JWT_SECRET=${JWT_SECRET:-jwtsecret}
+      - NODE_ENV=development
     command: ["npm", "test"]

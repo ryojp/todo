@@ -2,24 +2,47 @@ import mongoose from "mongoose";
 import request from "supertest";
 import Task from "../src/models/taskModel";
 import app from "../src/app";
+import { mongoURL, mongoUser, mongoPass, mongoDBName } from "../src/env";
+import User from "../src/models/userModel";
 
-describe("Test /tasks endpoints", () => {
+// Define an agent to store the cookie (containing JWT)
+const agent = request.agent(app);
+
+describe("Test auth and /tasks endpoints", () => {
   mongoose.Promise = global.Promise;
 
-  // connect to MongoDB before running each test case
+  // Connect to MongoDB before running each test case
+  // Create a test user and login
   beforeEach(async () => {
     await mongoose
-      .connect("mongodb://mongo-test/", {
-        user: "testuser",
-        pass: "testpass",
-        dbName: "TestDB",
+      .connect(mongoURL, {
+        user: mongoUser,
+        pass: mongoPass,
+        dbName: mongoDBName,
       })
       .catch((err) => {
         console.log("Error connecting to the database\n" + err);
       });
+
+    const testUser = { username: "testuser", password: "pass" };
+
+    // Sign up if not done yet
+    const exists = await User.findByUsername(testUser.username);
+    if (!exists) {
+      await agent.post("/signup").send(testUser).expect(200);
+      console.log("Created a test user.");
+    }
+
+    // Login
+    const res = await agent.post("/login").send(testUser).expect(200);
+    try {
+      agent.saveCookies(res);
+    } catch (err) {
+      console.log(err);
+    }
   });
 
-  // drop MongoDB and close connection after running each test case
+  // Drop MongoDB and close connection after running each test case
   afterEach((done) => {
     Task.deleteMany({}, async () => {
       await mongoose.disconnect();
@@ -30,7 +53,7 @@ describe("Test /tasks endpoints", () => {
   it("GET /tasks", async () => {
     const task = await Task.create({ name: "Example" });
 
-    return request(app)
+    return agent
       .get("/tasks")
       .expect(200)
       .then((response) => {
@@ -47,7 +70,7 @@ describe("Test /tasks endpoints", () => {
   it("POST /tasks", async () => {
     const data = { name: "Sample" };
 
-    return request(app)
+    return agent
       .post("/tasks")
       .send(data)
       .expect(200)
@@ -66,7 +89,7 @@ describe("Test /tasks endpoints", () => {
   it("GET /tasks/:taskId", async () => {
     const task = await Task.create({ name: "Example" });
 
-    return request(app)
+    return agent
       .get(`/tasks/${task.id}`)
       .expect(200)
       .then(async (response) => {
@@ -81,7 +104,7 @@ describe("Test /tasks endpoints", () => {
 
     const data = { name: "Updated Name" };
 
-    return request(app)
+    return agent
       .put(`/tasks/${task.id}`)
       .send(data)
       .expect(200)
@@ -100,11 +123,18 @@ describe("Test /tasks endpoints", () => {
   it("DELETE /tasks/:taskId", async () => {
     const task = await Task.create({ name: "Example" });
 
-    return request(app)
+    return agent
       .delete(`/tasks/${task.id}`)
       .expect(200)
       .then(async () => {
         expect(await Task.findOne({ _id: task._id })).toBeFalsy();
       });
+  });
+
+  it("Duplicate username for /signup", async () => {
+    const user2 = { username: "testuser", password: "another" };
+    const res = await agent.post("/signup").send(user2);
+    expect(res.status).toEqual(200);
+    expect(res.body).toHaveProperty("err"); // should receive an error message
   });
 });

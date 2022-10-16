@@ -11,12 +11,9 @@ export const mongoDBName = process.env.MONGODB_DBNAME as string;
 export const jwtSecret = process.env.JWT_SECRET as string;
 
 export const validate = (): boolean => {
-  if (!jwtSecret) return false;
-
-  if (!mongoURL) return false;
-  if (!mongoUser) return false;
-  if (!mongoPass) return false;
-  if (!mongoDBName) return false;
+  if (!jwtSecret || !mongoURL || !mongoUser || !mongoPass || !mongoDBName) {
+    return false;
+  }
 
   return true;
-}
+};

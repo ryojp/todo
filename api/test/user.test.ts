@@ -4,24 +4,25 @@ import User, {
   LoginResult,
   MAX_LOGIN_ATTEMPTS,
 } from "../src/models/userModel";
+import { mongoURL, mongoUser, mongoPass, mongoDBName } from "../src/env";
 
 describe("Test User DB", () => {
   mongoose.Promise = global.Promise;
 
-  // connect to MongoDB before running each test case
+  // Connect to MongoDB before running each test case
   beforeEach(async () => {
     await mongoose
-      .connect("mongodb://mongo-test/", {
-        user: "testuser",
-        pass: "testpass",
-        dbName: "TestDB",
+      .connect(mongoURL, {
+        user: mongoUser,
+        pass: mongoPass,
+        dbName: mongoDBName,
       })
       .catch((err) => {
         console.log("Error connecting to the database\n" + err);
       });
   });
 
-  // drop MongoDB and close connection after running each test case
+  // Drop MongoDB and close connection after running each test case
   afterEach((done) => {
     User.deleteMany({}, async () => {
       await mongoose.disconnect();
