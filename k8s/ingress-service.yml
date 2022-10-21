@@ -17,7 +17,7 @@ spec:
             service:
               name: api-cluster-ip-service
               port:
-                number: 5000
+                number: 4000
         - path: /?(.*)
           pathType: Prefix
           backend:

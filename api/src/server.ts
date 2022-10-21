@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 import app from "./app";
 
-const port = 5000;
+const port: number = +(process.env.API_SERVER_PORT as string);
 
 const mongoURL = process.env.MONGODB_URL || "";
 const mongoUser = process.env.MONGODB_USER || "";

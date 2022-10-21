@@ -12,7 +12,7 @@ services:
       context: ./nginx
       dockerfile: Dockerfile.dev
     ports:
-      - "8080:80"
+      - "8080:8080"
 
   frontend:
     restart: always
@@ -70,8 +70,9 @@ services:
       - MONGODB_USER=${MONGO_USERNAME:-devuser}
       - MONGODB_PASS=${MONGO_PASSWORD:-somepass}
       - MONGODB_DBNAME=${MONGO_DBNAME:-TodoDB}
+      - API_SERVER_PORT=4000
     ports:
-      - "5001:5000"
+      - "4000:4000"
 
   mongo-test:
     image: 'mongo:latest'
