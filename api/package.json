@@ -4,7 +4,7 @@
   "description": "Backend API",
   "main": "src/server.js",
   "scripts": {
-    "start": "npm run build && node dist/server.js",
+    "start": "npm run build && node dist/src/server.js",
     "build": "tsc -p .",
     "dev": "nodemon --watch 'src/**/*.ts' --exec \"ts-node\" src/server.ts",
     "test": "jest --runInBand --watchAll"
