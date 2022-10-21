@@ -4,10 +4,15 @@ import app from "./app";
 
 const port: number = +(process.env.API_SERVER_PORT as string);
 
-const mongoURL = process.env.MONGODB_URL || "";
-const mongoUser = process.env.MONGODB_USER || "";
-const mongoPass = process.env.MONGODB_PASS || "";
-const mongoDBName = process.env.MONGODB_DBNAME || "";
+const mongoURL = process.env.MONGODB_URL as string;
+const mongoUser = process.env.MONGODB_USER as string;
+const mongoPass = process.env.MONGODB_PASS as string;
+const mongoDBName = process.env.MONGODB_DBNAME as string;
+
+if (!mongoURL || !mongoUser || !mongoPass || !mongoDBName) {
+  console.log("Environment variables are not set, dying!")
+  process.exit(1);
+}
 
 mongoose.Promise = global.Promise;
 mongoose
