@@ -1,4 +1,4 @@
-import User, { IUserDoc, LoginResult } from "../models/userModel";
+import User, { IUserDoc, LoginResult } from "../models/auth";
 import { Request, Response } from "express";
 import { sign, SignOptions } from "jsonwebtoken";
 import { nodeEnv, jwtSecret } from "../env";

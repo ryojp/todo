@@ -6,7 +6,7 @@ import {
   get_task,
   update_task,
   delete_task,
-} from "../controllers/taskController";
+} from "../controllers/task";
 import { verifyToken } from "../middleware/verifyToken";
 
 export const router = Router();

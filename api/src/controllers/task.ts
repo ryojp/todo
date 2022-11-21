@@ -1,4 +1,4 @@
-import Task, { ITaskDoc } from "../models/taskModel";
+import Task, { ITaskDoc } from "../models/task";
 import { Request, Response } from "express";
 import { CallbackError } from "mongoose";
 

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { verify, VerifyOptions, Algorithm } from "jsonwebtoken";
 
 import { jwtSecret } from "../env";
-import { signOptions } from "../controllers/userController";
+import { signOptions } from "../controllers/auth";
 
 // JWT Verify options
 const verifyOptions: VerifyOptions = {
