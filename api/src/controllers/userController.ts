@@ -6,8 +6,8 @@ import { nodeEnv, jwtSecret } from "../env";
 // JWT Sign options
 const signOptions: SignOptions = {
   algorithm: "HS256",
-  expiresIn: "1min",
-  issuer: `github.com/keikekke/todo:${nodeEnv}`,
+  expiresIn: "1hr",
+  issuer: `github.com/ryojp/todo:${nodeEnv}`,
 };
 
 // JWT Verify options
@@ -16,15 +16,21 @@ const verifyOptions: VerifyOptions = {
   issuer: signOptions.issuer,
 };
 
+type AuthRespPayload = {
+  username?: string;
+  token?: string;
+  err?: string;
+}
+
 // Create a new user
 export const createUser = async (
   req: Request,
-  res: Response<{ username?: string; err?: string }>
+  res: Response<AuthRespPayload>
 ) => {
   try {
     const { username, password } = req.body;
     await User.create({ username, password });
-    res.send({ username });
+    res.status(201).send({ username });
   } catch (err) {
     console.log(err);
     if (err instanceof Error) {
@@ -34,10 +40,10 @@ export const createUser = async (
   }
 };
 
-// Authenticate a user and return a JWT in cookie if success
+// Authenticate a user and return a JWT if success
 export const authenticate = async (
   req: Request,
-  res: Response<{ username?: string; err?: string }>
+  res: Response<AuthRespPayload>
 ) => {
   try {
     const { username, password } = req.body;
@@ -46,11 +52,7 @@ export const authenticate = async (
       case LoginResult.SUCCESS:
         // generate JWT and store it in cookie with http-only and secure (if prod)
         const token = sign({ username }, jwtSecret, signOptions);
-        res.cookie("token", token, {
-          httpOnly: true,
-          secure: nodeEnv === "production",
-        });
-        res.send({ username });
+        res.send({ username, token });
         break;
       case LoginResult.MAX_ATTEMPTS:
         throw Error("Too many failed attempts. Try again in hours.");
@@ -75,7 +77,14 @@ export const verifyToken = (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies.token as string;
+    const authHeader = req.get('Authorization');
+    if (!authHeader) {
+      throw Error("No Authorization header found");
+    }
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      throw Error("Authorization token is not provided");
+    }
     verify(token, jwtSecret, verifyOptions);
     next();
   } catch (err) {

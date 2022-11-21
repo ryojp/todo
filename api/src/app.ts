@@ -1,6 +1,5 @@
 import express from "express";
 import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
 import cors from 'cors';
 
 import routes from "./routes/routes";
@@ -15,7 +14,6 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use(cookieParser());
 app.use(cors({
   origin: [process.env['FRONTEND_URL'] as string],
   methods: 'GET, POST, PUT, PATCH, DELETE',
