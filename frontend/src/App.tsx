@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
 import { Fragment, useContext, useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import AuthForm from "./components/auth/AuthForm";
 import NewTask from "./components/NewTask";
 import TaskList from "./components/TaskList";
@@ -97,13 +98,22 @@ const App = () => {
   return (
     <Fragment>
       {error && <h2>{`Error: ${error.message}`}</h2>}
-      <AuthForm />
-      <NewTask onAddTask={addTaskHandler} />
-      <TaskList
-        tasks={tasks}
-        onDeleteTask={deleteTaskHandler}
-        onEditTask={editTaskHandler}
-      />
+      <Routes>
+        <Route path="/auth" element={<AuthForm />} />
+        <Route
+          path="/"
+          element={
+            <Fragment>
+              <NewTask onAddTask={addTaskHandler} />
+              <TaskList
+                tasks={tasks}
+                onDeleteTask={deleteTaskHandler}
+                onEditTask={editTaskHandler}
+              />
+            </Fragment>
+          }
+        />
+      </Routes>
     </Fragment>
   );
 };

@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Button, TextField } from "@mui/material";
 import { Container, Stack } from "@mui/system";
 import { useForm } from "react-hook-form";
 import AuthContext from "../../contexts/auth-context";
 import client from "../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 type FormValues = {
   username: string;
@@ -11,17 +12,28 @@ type FormValues = {
 };
 
 const AuthForm: React.FC = () => {
-  const { register, handleSubmit } = useForm<FormValues>();
+  const navigate = useNavigate();
+  const { register, handleSubmit, reset } = useForm<FormValues>();
+  const [isLogin, setIsLogin] = useState(true);
   const authCtx = useContext(AuthContext);
 
   const handleLogin = async (data: FormValues) => {
     try {
-      console.log(data);
       const res = await client.post("/auth/login", data);
-      console.log(res.data);
       if (res.data.token) {
         authCtx.login(res.data.token);
       }
+      reset({ username: "", password: "" });
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleSignup = async (data: FormValues) => {
+    try {
+      await client.post("/auth/signup", data);
+      setIsLogin(true);
     } catch (err) {
       console.log(err);
     }
@@ -29,7 +41,15 @@ const AuthForm: React.FC = () => {
 
   const submitHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    handleSubmit(handleLogin)();
+    if (isLogin) {
+      handleSubmit(handleLogin)();
+    } else {
+      handleSubmit(handleSignup)();
+    }
+  };
+
+  const toggleAuthModeHandler = () => {
+    setIsLogin((prev) => !prev);
   };
 
   return (
@@ -42,11 +62,15 @@ const AuthForm: React.FC = () => {
         />
         <TextField
           label="Passsword"
+          type="password"
           required
           {...register("password", { required: true })}
         />
         <Button type="submit" variant="contained">
-          Log in
+          {isLogin ? "Log in" : "Sign up"}
+        </Button>
+        <Button type="button" variant="text" onClick={toggleAuthModeHandler}>
+          {isLogin ? "Create new account" : "Login with existing account"}
         </Button>
       </Stack>
     </Container>
