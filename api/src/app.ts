@@ -1,8 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
-import cors from 'cors';
+import cors from "cors";
 
-import routes from "./routes/routes";
+import { router as authRoutes } from "./routes/auth";
+import { router as taskRoutes } from "./routes/task";
 import { validate } from "./env";
 
 if (!validate()) {
@@ -14,14 +15,15 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use(cors({
-  origin: [process.env['FRONTEND_URL'] as string],
-  methods: 'GET, POST, PUT, PATCH, DELETE',
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}))
+app.use(
+  cors({
+    origin: [process.env["FRONTEND_URL"] as string],
+    methods: "GET, POST, PUT, PATCH, DELETE",
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-routes(app);
-
-app.get("/");
+app.use("/auth", authRoutes);
+app.use("/tasks", taskRoutes);
 
 export default app;

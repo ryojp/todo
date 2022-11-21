@@ -1,32 +1,23 @@
 import User, { IUserDoc, LoginResult } from "../models/userModel";
-import { NextFunction, Request, Response } from "express";
-import { sign, SignOptions, verify, VerifyOptions, Algorithm } from "jsonwebtoken";
+import { Request, Response } from "express";
+import { sign, SignOptions } from "jsonwebtoken";
 import { nodeEnv, jwtSecret } from "../env";
 
 // JWT Sign options
-const signOptions: SignOptions = {
+export const signOptions: SignOptions = {
   algorithm: "HS256",
   expiresIn: "1hr",
   issuer: `github.com/ryojp/todo:${nodeEnv}`,
-};
-
-// JWT Verify options
-const verifyOptions: VerifyOptions = {
-  algorithms: [signOptions.algorithm] as Algorithm[],
-  issuer: signOptions.issuer,
 };
 
 type AuthRespPayload = {
   username?: string;
   token?: string;
   err?: string;
-}
+};
 
 // Create a new user
-export const createUser = async (
-  req: Request,
-  res: Response<AuthRespPayload>
-) => {
+export const signup = async (req: Request, res: Response<AuthRespPayload>) => {
   try {
     const { username, password } = req.body;
     await User.create({ username, password });
@@ -41,10 +32,7 @@ export const createUser = async (
 };
 
 // Authenticate a user and return a JWT if success
-export const authenticate = async (
-  req: Request,
-  res: Response<AuthRespPayload>
-) => {
+export const login = async (req: Request, res: Response<AuthRespPayload>) => {
   try {
     const { username, password } = req.body;
     const result = await User.getAuthenticated(username, password);
@@ -55,10 +43,10 @@ export const authenticate = async (
         res.send({ username, token });
         break;
       case LoginResult.MAX_ATTEMPTS:
-        throw Error("Too many failed attempts. Try again in hours.");
+        throw new Error("Too many failed attempts. Try again in hours.");
         break;
       default:
-        throw Error("Incorrect credentials");
+        throw new Error("Incorrect credentials");
         break;
     }
   } catch (err) {
@@ -67,29 +55,6 @@ export const authenticate = async (
       res.send({ err: err.message });
     }
     return;
-  }
-};
-
-// Verify the token sent as a cookie
-export const verifyToken = (
-  req: Request,
-  res: Response<{ err: string }>,
-  next: NextFunction
-) => {
-  try {
-    const authHeader = req.get('Authorization');
-    if (!authHeader) {
-      throw Error("No Authorization header found");
-    }
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-      throw Error("Authorization token is not provided");
-    }
-    verify(token, jwtSecret, verifyOptions);
-    next();
-  } catch (err) {
-    console.log(err);
-    res.json({ err: "You are not aurothorized for this endpoint." });
   }
 };
 
