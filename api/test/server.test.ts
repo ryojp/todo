@@ -1,19 +1,20 @@
 import mongoose from "mongoose";
 import request from "supertest";
-import Task from "../src/models/taskModel";
+import Task from "../src/models/task";
 import app from "../src/app";
 import { mongoURL, mongoUser, mongoPass, mongoDBName } from "../src/env";
-import User from "../src/models/userModel";
+import User from "../src/models/auth";
 
 // Define an agent to store the cookie (containing JWT)
 const agent = request.agent(app);
 
 describe("Test auth and /tasks endpoints", () => {
   mongoose.Promise = global.Promise;
+  let token: string;
 
   // Connect to MongoDB before running each test case
   // Create a test user and login
-  beforeEach(async () => {
+  beforeAll(async () => {
     await mongoose
       .connect(mongoURL, {
         user: mongoUser,
@@ -29,25 +30,31 @@ describe("Test auth and /tasks endpoints", () => {
     // Sign up if not done yet
     const exists = await User.findByUsername(testUser.username);
     if (!exists) {
-      await agent.post("/signup").send(testUser).expect(200);
+      await agent.post("/auth/signup").send(testUser).expect(201);
       console.log("Created a test user.");
     }
 
     // Login
-    const res = await agent.post("/login").send(testUser).expect(200);
+    const res = await agent.post("/auth/login").send(testUser).expect(200);
     try {
-      agent.saveCookies(res);
+      //agent.saveCookies(res);
+      token = res.body.token;
+      //agent.set("Authorizatoin", "Bearer " + token);
     } catch (err) {
       console.log(err);
     }
   });
 
-  // Drop MongoDB and close connection after running each test case
+  // Drop Task collection after running each test case
   afterEach((done) => {
     Task.deleteMany({}, async () => {
-      await mongoose.disconnect();
       done();
     });
+  });
+
+  // Disconnect from the MongoDB
+  afterAll(async () => {
+    await mongoose.disconnect();
   });
 
   it("GET /tasks", async () => {
@@ -55,6 +62,7 @@ describe("Test auth and /tasks endpoints", () => {
 
     return agent
       .get("/tasks")
+      .set("Authorization", `Bearer ${token}`)
       .expect(200)
       .then((response) => {
         // Check type and length
@@ -72,6 +80,7 @@ describe("Test auth and /tasks endpoints", () => {
 
     return agent
       .post("/tasks")
+      .set("Authorization", `Bearer ${token}`)
       .send(data)
       .expect(200)
       .then(async (response) => {
@@ -91,6 +100,7 @@ describe("Test auth and /tasks endpoints", () => {
 
     return agent
       .get(`/tasks/${task.id}`)
+      .set("Authorization", `Bearer ${token}`)
       .expect(200)
       .then(async (response) => {
         // Check the response
@@ -106,6 +116,7 @@ describe("Test auth and /tasks endpoints", () => {
 
     return agent
       .put(`/tasks/${task.id}`)
+      .set("Authorization", `Bearer ${token}`)
       .send(data)
       .expect(200)
       .then(async (response) => {
@@ -125,16 +136,17 @@ describe("Test auth and /tasks endpoints", () => {
 
     return agent
       .delete(`/tasks/${task.id}`)
+      .set("Authorization", `Bearer ${token}`)
       .expect(200)
       .then(async () => {
         expect(await Task.findOne({ _id: task._id })).toBeFalsy();
       });
   });
 
-  it("Duplicate username for /signup", async () => {
+  it("Duplicate username for /auth/signup", async () => {
     const user2 = { username: "testuser", password: "another" };
-    const res = await agent.post("/signup").send(user2);
-    expect(res.status).toEqual(200);
-    expect(res.body).toHaveProperty("err"); // should receive an error message
+    const res = await agent.post("/auth/signup").send(user2);
+    expect(res.status).toEqual(500);
+    expect(res.body).toHaveProperty("error"); // should receive an error message
   });
 });

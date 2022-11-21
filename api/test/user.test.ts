@@ -3,7 +3,7 @@ import User, {
   LOGIN_LOCK_TIME_MS,
   LoginResult,
   MAX_LOGIN_ATTEMPTS,
-} from "../src/models/userModel";
+} from "../src/models/auth";
 import { mongoURL, mongoUser, mongoPass, mongoDBName } from "../src/env";
 
 describe("Test User DB", () => {
