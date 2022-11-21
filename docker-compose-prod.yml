@@ -26,7 +26,7 @@ services:
       context: ./certs
       dockerfile: Dockerfile
     environment:
-      DOMAIN: example.local
+      DOMAIN: ${DOMAIN}
     volumes:
       - certificates:/app:delegated
 
@@ -35,6 +35,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    environment:
+      - REACT_APP_API_URL=/api
 
   mongo:
     image: 'mongo:latest'
@@ -67,3 +69,4 @@ services:
       - MONGODB_PASS=${MONGO_PASSWORD}
       - MONGODB_DBNAME=${MONGO_DBNAME}
       - API_SERVER_PORT=4000
+      - FRONTEND_URL=https://${DOMAIN}/
