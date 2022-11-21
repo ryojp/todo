@@ -1,7 +1,8 @@
 import User, { IUserDoc, LoginResult } from "../models/auth";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { sign, SignOptions } from "jsonwebtoken";
 import { nodeEnv, jwtSecret } from "../env";
+import { HttpError } from "../middleware/error";
 
 // JWT Sign options
 export const signOptions: SignOptions = {
@@ -17,7 +18,11 @@ type AuthRespPayload = {
 };
 
 // Create a new user
-export const signup = async (req: Request, res: Response<AuthRespPayload>) => {
+export const signup = async (
+  req: Request,
+  res: Response<AuthRespPayload>,
+  next: NextFunction
+) => {
   try {
     const { username, password } = req.body;
     await User.create({ username, password });
@@ -25,14 +30,18 @@ export const signup = async (req: Request, res: Response<AuthRespPayload>) => {
   } catch (err) {
     console.log(err);
     if (err instanceof Error) {
-      res.send({ err: "Unable to create a user" });
+      return next(new HttpError("Unable to create a user", 500));
     }
     return;
   }
 };
 
 // Authenticate a user and return a JWT if success
-export const login = async (req: Request, res: Response<AuthRespPayload>) => {
+export const login = async (
+  req: Request,
+  res: Response<AuthRespPayload>,
+  next: NextFunction
+) => {
   try {
     const { username, password } = req.body;
     const result = await User.getAuthenticated(username, password);
@@ -40,33 +49,31 @@ export const login = async (req: Request, res: Response<AuthRespPayload>) => {
       case LoginResult.SUCCESS:
         // generate JWT and store it in cookie with http-only and secure (if prod)
         const token = sign({ username }, jwtSecret, signOptions);
-        res.send({ username, token });
-        break;
+        return res.send({ username, token });
       case LoginResult.MAX_ATTEMPTS:
-        throw new Error("Too many failed attempts. Try again in hours.");
-        break;
+        return next(
+          new HttpError("Too many failed attempts. Try again in hours.", 429)
+        );
       default:
-        throw new Error("Incorrect credentials");
-        break;
+        return next(new HttpError("Incorrect credentials", 401));
     }
   } catch (err) {
     console.log(err);
     if (err instanceof Error) {
-      res.send({ err: err.message });
+      next(err);
     }
-    return;
   }
 };
 
 // Get the user with the given username
 export const getUser = async (
   req: Request<{ username: string }>,
-  res: Response<IUserDoc | { err: string }>
+  res: Response<IUserDoc | { err: string }>,
+  next: NextFunction
 ) => {
   const user = await User.findByUsername(req.params.username);
   if (!user) {
-    res.json({ err: "No such username" });
-    return;
+    return next(new HttpError("No such username", 401));
   }
   res.json(user);
 };

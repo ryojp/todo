@@ -3,6 +3,7 @@ import { verify, VerifyOptions, Algorithm } from "jsonwebtoken";
 
 import { jwtSecret } from "../env";
 import { signOptions } from "../controllers/auth";
+import { HttpError } from "./error";
 
 // JWT Verify options
 const verifyOptions: VerifyOptions = {
@@ -11,24 +12,17 @@ const verifyOptions: VerifyOptions = {
 };
 
 // Verify the token sent as a cookie
-export const verifyToken = (
-  req: Request,
-  res: Response<{ err: string }>,
-  next: NextFunction
-) => {
-  try {
-    const authHeader = req.get("Authorization");
-    if (!authHeader) {
-      throw new Error("No Authorization header found");
-    }
-    const token = authHeader.split(" ")[1];
-    if (!token) {
-      throw new Error("Authorization token is not provided");
-    }
-    verify(token, jwtSecret, verifyOptions);
-    next();
-  } catch (err) {
-    console.log(err);
-    res.json({ err: "You are not aurothorized for this endpoint." });
+export const verifyToken = (req: Request, _: Response, next: NextFunction) => {
+  const authHeader = req.get("Authorization");
+  if (!authHeader) {
+    return next(new HttpError("No Authorization header found", 401));
   }
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return next(new HttpError("Authorization token is not provided", 401));
+  }
+  verify(token, jwtSecret, verifyOptions, (err) => {
+    if (err) return next(new HttpError("Invalid token", 401));
+    next();
+  });
 };
