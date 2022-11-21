@@ -12,7 +12,7 @@ Makefile provides shortcuts for development commands.
 - `make up` to start a dev environment *without* building images.
 - `make down` to stop the dev environment.
 
-After the dev environment starts up, the frontend client listens requests at `http://localhost:8080` and the API server accepts requests at `http://localhost:5001`.
+After the dev environment starts up, the frontend client listens requests at `http://localhost:3000` and the API server accepts requests at `http://localhost:4000`.
 
 ## Deployment
 ### Using Docker-Compose
