@@ -6,6 +6,7 @@ import NewTask from "./components/NewTask";
 import TaskList from "./components/TaskList";
 import { TaskType } from "./components/taskTypes";
 import AuthContext from "./contexts/auth-context";
+import NavBar from "./layout/NavBar";
 import client from "./utils/api";
 
 const App = () => {
@@ -98,6 +99,7 @@ const App = () => {
   return (
     <Fragment>
       {error && <h2>{`Error: ${error.message}`}</h2>}
+      <NavBar />
       <Routes>
         <Route path="/auth" element={<AuthForm />} />
         <Route
