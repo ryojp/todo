@@ -37,3 +37,10 @@ spec:
                 secretKeyRef:
                   name: mongoinfo
                   key: MONGO_DBNAME
+            - name: _DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: mongoinfo
+                  key: DOMAIN
+            - name: FRONTEND_URL
+              value: https://$(_DOMAIN)
