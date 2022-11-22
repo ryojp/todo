@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = React.createContext({
   token: "",
@@ -12,19 +13,27 @@ type Props = {
 };
 
 export const AuthContextProvider: React.FC<Props> = (props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState("");
+
+  const navigate = useNavigate();
 
   const loginHandler = (token: string) => {
     setToken(token);
-    setIsLoggedIn(true);
   };
 
-  const logoutHandler = () => {};
+  const logoutHandler = () => {
+    setToken("");
+    navigate("/auth");
+  };
 
   return (
     <AuthContext.Provider
-      value={{ token, isLoggedIn, login: loginHandler, logout: logoutHandler }}
+      value={{
+        token: token,
+        isLoggedIn: !!token,
+        login: loginHandler,
+        logout: logoutHandler,
+      }}
     >
       {props.children}
     </AuthContext.Provider>
