@@ -1,4 +1,4 @@
-export type TaskType = {
+export type Task = {
   _id?: string;
   name: string;
 };

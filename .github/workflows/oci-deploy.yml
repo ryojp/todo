@@ -2,7 +2,8 @@ name: Deploy to OCI (Oracle Cloud Infrastructure)
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
