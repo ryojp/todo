@@ -37,9 +37,7 @@ describe("Test auth and /tasks endpoints", () => {
     // Login
     const res = await agent.post("/auth/login").send(testUser).expect(200);
     try {
-      //agent.saveCookies(res);
       token = res.body.token;
-      //agent.set("Authorizatoin", "Bearer " + token);
     } catch (err) {
       console.log(err);
     }
@@ -52,13 +50,17 @@ describe("Test auth and /tasks endpoints", () => {
     });
   });
 
-  // Disconnect from the MongoDB
+  // Delete the test user and disconnect from the MongoDB
   afterAll(async () => {
+    await User.deleteMany({});
     await mongoose.disconnect();
   });
 
   it("GET /tasks", async () => {
-    const task = await Task.create({ name: "Example" });
+    const testUser = await User.findByUsername("testuser");
+    const task = await Task.create({ name: "Example", creator: "testuser" });
+    testUser?.tasks.push(task._id);
+    await testUser?.save();
 
     return agent
       .get("/tasks")
@@ -96,7 +98,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   it("GET /tasks/:taskId", async () => {
-    const task = await Task.create({ name: "Example" });
+    const task = await Task.create({ name: "Example", creator: "testuser" });
 
     return agent
       .get(`/tasks/${task.id}`)
@@ -110,7 +112,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   it("PUT /tasks/:taskId", async () => {
-    const task = await Task.create({ name: "Example" });
+    const task = await Task.create({ name: "Example", creator: "testuser" });
 
     const data = { name: "Updated Name" };
 
@@ -132,7 +134,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   it("DELETE /tasks/:taskId", async () => {
-    const task = await Task.create({ name: "Example" });
+    const task = await Task.create({ name: "Example", creator: "testuser" });
 
     return agent
       .delete(`/tasks/${task.id}`)
