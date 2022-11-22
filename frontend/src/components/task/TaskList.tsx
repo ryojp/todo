@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { List, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import TaskItem from "./TaskItem";
-import { Task } from "../types/task";
-import TaskContext from "../contexts/task-context";
+import { Task } from "../../types/task";
+import TaskContext from "../../contexts/task-context";
 
 const TaskList: React.FC = () => {
   const taskCtx = useContext(TaskContext);

@@ -3,9 +3,9 @@ import { Button, TextField } from "@mui/material";
 import { Container, Stack } from "@mui/system";
 import { useForm } from "react-hook-form";
 
-import TaskContext from "../contexts/task-context";
-import { Task } from "../types/task";
-import useHttp from "../hooks/useHttp";
+import TaskContext from "../../contexts/task-context";
+import { Task } from "../../types/task";
+import useHttp from "../../hooks/useHttp";
 
 type FormValues = {
   name: string;

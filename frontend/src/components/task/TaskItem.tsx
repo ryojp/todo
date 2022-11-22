@@ -14,9 +14,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Task } from "../types/task";
-import TaskContext from "../contexts/task-context";
-import useHttp from "../hooks/useHttp";
+import { Task } from "../../types/task";
+import TaskContext from "../../contexts/task-context";
+import useHttp from "../../hooks/useHttp";
 
 type PropsType = {
   task: Task;
