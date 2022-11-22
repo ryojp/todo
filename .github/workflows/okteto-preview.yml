@@ -2,9 +2,10 @@ name: Preview on Okteto Cloud
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 jobs:
-  Preview-Okteto:
+  preview_okteto:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the most recent commit on this branch

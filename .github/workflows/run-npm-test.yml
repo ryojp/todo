@@ -2,11 +2,13 @@ name: Run Tests for Frontend and API
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
   push:
-    branches: [ main ]
+    branches:
+      - main
 jobs:
-  Run-NPM-Test-For-Frontend-And-API:
+  run_npm_test_for_frontend_and_api:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the most recent commit on this branch
