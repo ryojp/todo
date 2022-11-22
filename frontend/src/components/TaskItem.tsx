@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Button,
   Card,
@@ -15,11 +15,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { TaskType } from "./taskTypes";
+import client from "../utils/api";
+import TaskContext from "../contexts/task-ocntext";
+import AuthContext from "../contexts/auth-context";
 
 type PropsType = {
   task: TaskType;
-  onDelete: (task: TaskType) => void;
-  onEdit: (task: TaskType) => void;
 };
 
 type FormValues = {
@@ -29,6 +30,16 @@ type FormValues = {
 const TaskItem: React.FC<PropsType> = (props) => {
   const [editing, setEditing] = useState(false);
   const { register, handleSubmit, reset } = useForm<FormValues>();
+
+  const taskCtx = useContext(TaskContext);
+
+  const authCtx = useContext(AuthContext);
+
+  const authHead = {
+    headers: {
+      Authorization: `Bearer ${authCtx.token}`,
+    },
+  };
 
   const startEditing = () => {
     setEditing(true);
@@ -43,10 +54,25 @@ const TaskItem: React.FC<PropsType> = (props) => {
     const new_task_name = data.name;
     if (new_task_name !== props.task.name) {
       // only if the name changes
-      console.log(data);
-      props.onEdit({ ...props.task, name: new_task_name });
+      editTaskHandler({ ...props.task, name: new_task_name });
     }
     setEditing(false);
+  };
+
+  // Handler for Edit button.
+  const editTaskHandler = (task: TaskType) => {
+    // send PUT request and update the task upon receiving a response
+    client.put(`/tasks/${task._id}`, task, authHead).then(() => {
+      taskCtx.updateTask(task);
+    });
+  };
+
+  // Handler for Delete button.
+  const deleteTaskHandler = (task: TaskType) => {
+    // send DELETE request and delete the task up on reception from backend DB
+    client.delete(`/tasks/${task._id}`, authHead).then(() => {
+      taskCtx.deleteTask(task);
+    });
   };
 
   if (editing) {
@@ -84,7 +110,7 @@ const TaskItem: React.FC<PropsType> = (props) => {
             </ListItemIcon>
           </Button>
           <Button
-            onClick={() => props.onDelete(props.task)}
+            onClick={() => deleteTaskHandler(props.task)}
             style={{ minWidth: "0px" }}
           >
             <ListItemIcon style={{ minWidth: "0px" }}>

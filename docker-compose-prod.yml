@@ -39,7 +39,7 @@ services:
       - REACT_APP_API_URL=/api
 
   mongo:
-    image: 'mongo:latest'
+    image: 'mongo:6.0'
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}

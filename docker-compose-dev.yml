@@ -27,7 +27,7 @@ services:
     command: ["npm", "test"]
 
   mongo:
-    image: 'mongo:latest'
+    image: 'mongo:6.0'
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME:-devuser}
@@ -68,7 +68,7 @@ services:
       - "4000:4000"
 
   mongo-test:
-    image: 'mongo:latest'
+    image: 'mongo:6.0'
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=testuser

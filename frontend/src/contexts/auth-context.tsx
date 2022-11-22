@@ -2,8 +2,6 @@ import React, { useState } from "react";
 
 const AuthContext = React.createContext({
   token: "",
-  //token:
-  //  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyIiwiaWF0IjoxNjY5MDQ1Mjg3LCJleHAiOjE2NjkwNDg4ODcsImlzcyI6ImdpdGh1Yi5jb20vcnlvanAvdG9kbzpkZXZlbG9wbWVudCJ9.QaWN4hidgOPVvncL34G03BWG_CQS1KVczvgYdSb5y2o",
   isLoggedIn: false,
   login: (_: string) => {},
   logout: () => {},
