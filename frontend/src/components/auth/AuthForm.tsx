@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import AuthContext from "../../contexts/auth-context";
 import client from "../../utils/api";
 import { useNavigate } from "react-router-dom";
+import TaskContext from "../../contexts/task-context";
 
 type FormValues = {
   username: string;
@@ -16,12 +17,14 @@ const AuthForm: React.FC = () => {
   const { register, handleSubmit, reset } = useForm<FormValues>();
   const [isLogin, setIsLogin] = useState(true);
   const authCtx = useContext(AuthContext);
+  const taskCtx = useContext(TaskContext);
 
   const handleLogin = async (data: FormValues) => {
     try {
       const res = await client.post("/auth/login", data);
       if (res.data.token) {
         authCtx.login(res.data.token);
+        loadTasks(res.data.token);
       }
       reset({ username: "", password: "" });
       navigate("/");
@@ -52,6 +55,18 @@ const AuthForm: React.FC = () => {
     setIsLogin((prev) => !prev);
   };
 
+  const loadTasks = (token: string) => {
+    const authHead = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    client.get("/tasks", authHead).then((response) => {
+      taskCtx.setTasks(response.data);
+    });
+  };
+
   return (
     <Container maxWidth="xs" sx={{ pt: 5 }}>
       <Stack component="form" onSubmit={submitHandler} spacing={3}>
@@ -70,7 +85,7 @@ const AuthForm: React.FC = () => {
           {isLogin ? "Log in" : "Sign up"}
         </Button>
         <Button type="button" variant="text" onClick={toggleAuthModeHandler}>
-          {isLogin ? "Create new account" : "Login with existing account"}
+          {isLogin ? "Create a new account" : "Login with an existing account"}
         </Button>
       </Stack>
     </Container>

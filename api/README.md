@@ -20,7 +20,6 @@ Sign up and login are required before you can acccess resource-related APIs.
 ## Task-related APIs
 
 - List tasks
-  - `curl -b ./cookie http://localhost:4000/tasks`
   - `curl -H "Authorization: Bearer {{your_token}}" -H "Content-Type: application/json" http://localhost:4000/tasks`
 - Create a new task
   - `curl -XPOST -H "Authorization: Bearer {{your_token}}" -H "Content-Type: application/json" -d '{"name":"Do Exercise"}' http://localhost:4000/tasks`
