@@ -2,22 +2,29 @@ import { Schema, model, Document } from "mongoose";
 
 interface ITask {
   name: string;
-  Created_date: string;
+  details?: string;
+  due?: Date;
+  creator: string;
 }
 
 export interface ITaskDoc extends Document, ITask {}
 
-const TaskSchema = new Schema({
-  name: {
-    type: String,
-    required: "Enter the name of the task",
+export const TaskSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: "Enter the name of the task",
+    },
+    details: String,
+    due: Date,
+    creator: {
+      type: String,
+      required: true,
+    },
   },
-  Created_date: {
-    type: Date,
-    defualt: Date.now,
-  },
-});
+  { timestamps: true }
+);
 
-const Task = model<ITaskDoc>("Tasks", TaskSchema);
+const Task = model<ITaskDoc>("Task", TaskSchema);
 
 export default Task;

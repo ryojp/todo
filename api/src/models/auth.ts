@@ -8,6 +8,7 @@ export const LOGIN_LOCK_TIME_MS = 2 * 60 * 60 * 1000; // 2 hr
 export interface IUser {
   username: string;
   password: string; // hashed on save
+  tasks: Array<Schema.Types.ObjectId>;
   loginAttempts: number;
   lockUntil?: number;
 }
@@ -41,6 +42,12 @@ const UserSchema = new Schema<IUserDoc, UserModel>({
     type: String,
     required: true,
   },
+  tasks: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Task",
+    },
+  ],
   loginAttempts: {
     type: Number,
     required: true,
@@ -129,6 +136,6 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-const User = model<IUserDoc, UserModel>("Users", UserSchema);
+const User = model<IUserDoc, UserModel>("User", UserSchema);
 
 export default User;
