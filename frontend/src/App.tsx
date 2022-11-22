@@ -4,7 +4,7 @@ import AuthForm from "./components/auth/AuthForm";
 import NewTask from "./components/NewTask";
 import TaskList from "./components/TaskList";
 import AuthContext from "./contexts/auth-context";
-import TaskContext from "./contexts/task-ocntext";
+import TaskContext from "./contexts/task-context";
 import NavBar from "./layout/NavBar";
 import client from "./utils/api";
 

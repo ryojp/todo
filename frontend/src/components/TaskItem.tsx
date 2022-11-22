@@ -14,13 +14,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { TaskType } from "./taskTypes";
+import { Task } from "../types/task";
 import client from "../utils/api";
-import TaskContext from "../contexts/task-ocntext";
+import TaskContext from "../contexts/task-context";
 import AuthContext from "../contexts/auth-context";
 
 type PropsType = {
-  task: TaskType;
+  task: Task;
 };
 
 type FormValues = {
@@ -60,7 +60,7 @@ const TaskItem: React.FC<PropsType> = (props) => {
   };
 
   // Handler for Edit button.
-  const editTaskHandler = (task: TaskType) => {
+  const editTaskHandler = (task: Task) => {
     // send PUT request and update the task upon receiving a response
     client.put(`/tasks/${task._id}`, task, authHead).then(() => {
       taskCtx.updateTask(task);
@@ -68,7 +68,7 @@ const TaskItem: React.FC<PropsType> = (props) => {
   };
 
   // Handler for Delete button.
-  const deleteTaskHandler = (task: TaskType) => {
+  const deleteTaskHandler = (task: Task) => {
     // send DELETE request and delete the task up on reception from backend DB
     client.delete(`/tasks/${task._id}`, authHead).then(() => {
       taskCtx.deleteTask(task);

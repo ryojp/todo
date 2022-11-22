@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { List, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import TaskItem from "./TaskItem";
-import { TaskType } from "./taskTypes";
-import TaskContext from "../contexts/task-ocntext";
+import { Task } from "../types/task";
+import TaskContext from "../contexts/task-context";
 
 const TaskList: React.FC = () => {
   const taskCtx = useContext(TaskContext);
@@ -21,7 +21,7 @@ const TaskList: React.FC = () => {
   return (
     <Container maxWidth="sm" sx={{ pt: 5 }}>
       <List>
-        {taskCtx.tasks.map((task: TaskType) => {
+        {taskCtx.tasks.map((task: Task) => {
           return <TaskItem key={task._id} task={task} />;
         })}
       </List>

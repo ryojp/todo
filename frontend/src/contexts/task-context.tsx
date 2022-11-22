@@ -1,12 +1,12 @@
 import { createContext, ReactNode, useState } from "react";
-import { TaskType } from "../components/taskTypes";
+import { Task } from "../types/task";
 
 const TaskContext = createContext({
-  tasks: Array<TaskType>(),
-  setTasks: (_: Array<TaskType>) => {},
-  addTask: (_: TaskType) => {},
-  updateTask: (_: TaskType) => {},
-  deleteTask: (_: TaskType) => {},
+  tasks: Array<Task>(),
+  setTasks: (_: Array<Task>) => {},
+  addTask: (_: Task) => {},
+  updateTask: (_: Task) => {},
+  deleteTask: (_: Task) => {},
 });
 
 type Props = {
@@ -14,23 +14,23 @@ type Props = {
 };
 
 export const TaskContextProvider: React.FC<Props> = ({ children }) => {
-  const [tasks, setTasks] = useState<Array<TaskType>>([]);
+  const [tasks, setTasks] = useState<Array<Task>>([]);
 
-  const addTask = (task: TaskType) => {
+  const addTask = (task: Task) => {
     setTasks((prev) => [...prev, task]);
   };
 
-  const updateTask = (task: TaskType) => {
+  const updateTask = (task: Task) => {
     setTasks((prev) =>
-      prev.map((elem: TaskType) => {
+      prev.map((elem: Task) => {
         if (elem._id !== task._id) return elem;
         else return task;
       })
     );
   };
 
-  const deleteTask = (task: TaskType) => {
-    setTasks((prev) => prev.filter((elem: TaskType) => elem._id !== task._id));
+  const deleteTask = (task: Task) => {
+    setTasks((prev) => prev.filter((elem: Task) => elem._id !== task._id));
   };
 
   return (
