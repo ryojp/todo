@@ -15,9 +15,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Task } from "../types/task";
-import client from "../utils/api";
 import TaskContext from "../contexts/task-context";
-import AuthContext from "../contexts/auth-context";
+import useHttp from "../hooks/useHttp";
 
 type PropsType = {
   task: Task;
@@ -30,16 +29,9 @@ type FormValues = {
 const TaskItem: React.FC<PropsType> = (props) => {
   const [editing, setEditing] = useState(false);
   const { register, handleSubmit, reset } = useForm<FormValues>();
+  const { client } = useHttp();
 
   const taskCtx = useContext(TaskContext);
-
-  const authCtx = useContext(AuthContext);
-
-  const authHead = {
-    headers: {
-      Authorization: `Bearer ${authCtx.token}`,
-    },
-  };
 
   const startEditing = () => {
     setEditing(true);
@@ -62,7 +54,7 @@ const TaskItem: React.FC<PropsType> = (props) => {
   // Handler for Edit button.
   const editTaskHandler = (task: Task) => {
     // send PUT request and update the task upon receiving a response
-    client.put(`/tasks/${task._id}`, task, authHead).then(() => {
+    client.put(`/tasks/${task._id}`, task).then(() => {
       taskCtx.updateTask(task);
     });
   };
@@ -70,7 +62,7 @@ const TaskItem: React.FC<PropsType> = (props) => {
   // Handler for Delete button.
   const deleteTaskHandler = (task: Task) => {
     // send DELETE request and delete the task up on reception from backend DB
-    client.delete(`/tasks/${task._id}`, authHead).then(() => {
+    client.delete(`/tasks/${task._id}`).then(() => {
       taskCtx.deleteTask(task);
     });
   };

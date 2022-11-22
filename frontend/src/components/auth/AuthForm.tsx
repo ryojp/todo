@@ -3,9 +3,9 @@ import { Button, TextField } from "@mui/material";
 import { Container, Stack } from "@mui/system";
 import { useForm } from "react-hook-form";
 import AuthContext from "../../contexts/auth-context";
-import client from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import TaskContext from "../../contexts/task-context";
+import useHttp from "../../hooks/useHttp";
 
 type FormValues = {
   username: string;
@@ -18,6 +18,7 @@ const AuthForm: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const authCtx = useContext(AuthContext);
   const taskCtx = useContext(TaskContext);
+  const { client } = useHttp();
 
   const handleLogin = async (data: FormValues) => {
     try {
