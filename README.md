@@ -6,6 +6,9 @@ This repository also hosts configuration files for GitHub Actions such as
 - create a preview page in Okteto Cloud
 - deploy the stable code in `main` branch on merging pull-requests
 
+## Demo
+Demo is available at https://ryojp-todo.web.app/ (using Firebase Hosting and Heroku, as they are free).
+
 ## How to Run (using Makefile)
 Makefile provides shortcuts for development commands.
 - `make` or `make up_build` to start a dev environment after building images.
