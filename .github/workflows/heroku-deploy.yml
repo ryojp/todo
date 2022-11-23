@@ -21,5 +21,8 @@ jobs:
       - name: Add heroku remote
         run: heroku git:remote -a ${{secrets.HEROKU_APP_NAME}}
 
-      - name: Push api/ subdir to the heroku repo
-        run: git subtree push --prefix api heroku main
+      # - name: Push api/ subdir to the heroku repo
+      #   run: git subtree push --prefix api heroku main
+
+      - name: (Force) Push api/ subdir to the heroku repo
+        run: git push heroku `git subtree split --prefix api main`:main --force
