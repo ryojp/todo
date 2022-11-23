@@ -1,5 +1,6 @@
 name: Deploy to Heroku on merge
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -9,9 +10,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      - name: Login to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}} #Must be unique in Heroku
           heroku_email: ${{secrets.HEROKU_EMAIL}}
-          appdir: "api" # <- This will point to the api folder in your project
+          justlogin: true
+
+      - name: Add heroku remote
+        run: heroku git:remote -a ${{secrets.HEROKU_APP_NAME}}
+
+      - name: Push api/ subdir to the heroku repo
+        run: git subtree push --prefix api heroku main
