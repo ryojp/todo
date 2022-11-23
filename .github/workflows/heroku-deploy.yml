@@ -1,0 +1,17 @@
+name: Deploy to Heroku on merge
+on:
+  push:
+    branches:
+      - main
+jobs:
+  push_to_heroku:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}} #Must be unique in Heroku
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          appdir: "api" # <- This will point to the api folder in your project
