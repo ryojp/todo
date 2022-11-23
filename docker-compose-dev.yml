@@ -62,7 +62,7 @@ services:
       - MONGODB_DBNAME=${MONGO_DBNAME:-TodoDB}
       - JWT_SECRET=${JWT_SECRET:-jwtsecret}
       - NODE_ENV=development
-      - API_SERVER_PORT=4000
+      - PORT=4000
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
     ports:
       - "4000:4000"

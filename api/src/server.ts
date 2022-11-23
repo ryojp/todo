@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import app from "./app";
 import { mongoURL, mongoUser, mongoPass, mongoDBName } from "./env";
 
-const port: number = +(process.env.API_SERVER_PORT as string);
+const port: number = +(process.env.PORT as string);
 
 mongoose.Promise = global.Promise;
 mongoose

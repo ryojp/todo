@@ -70,5 +70,5 @@ services:
       - MONGODB_DBNAME=${MONGO_DBNAME}
       - JWT_SECRET=${JWT_SECRET}
       - NODE_ENV=production
-      - API_SERVER_PORT=4000
+      - PORT=4000
       - FRONTEND_URL=https://${DOMAIN}/
