@@ -64,7 +64,7 @@ services:
       context: ./api
       dockerfile: Dockerfile
     environment:
-      - MONGODB_URL=mongodb://mongo/
+      - MONGODB_URL=${MONGO_URL:-mongodb://mongo/}
       - MONGODB_USER=${MONGO_USERNAME}
       - MONGODB_PASS=${MONGO_PASSWORD}
       - MONGODB_DBNAME=${MONGO_DBNAME}
