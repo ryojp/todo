@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import request from "supertest";
 import Task from "../src/models/task";
 import app from "../src/app";
 import { mongoURL, mongoUser, mongoPass, mongoDBName } from "../src/env";
-import User from "../src/models/auth";
+import User, { IUserDoc } from "../src/models/auth";
 
 // Define an agent to store the cookie (containing JWT)
 const agent = request.agent(app);
@@ -11,6 +11,7 @@ const agent = request.agent(app);
 describe("Test auth and /tasks endpoints", () => {
   mongoose.Promise = global.Promise;
   let token: string;
+  let user: IUserDoc & { _id: Schema.Types.ObjectId };
 
   // Connect to MongoDB before running each test case
   // Create a test user and login
@@ -28,10 +29,12 @@ describe("Test auth and /tasks endpoints", () => {
     const testUser = { username: "testuser", password: "pass" };
 
     // Sign up if not done yet
-    const exists = await User.findByUsername(testUser.username);
+    const exists = await User.findOne({ username: testUser.username });
     if (!exists) {
-      await agent.post("/auth/signup").send(testUser).expect(201);
+      user = await User.create(testUser);
       console.log("Created a test user.");
+    } else {
+      user = exists;
     }
 
     // Login
@@ -57,10 +60,9 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   it("GET /tasks", async () => {
-    const testUser = await User.findByUsername("testuser");
-    const task = await Task.create({ name: "Example", creator: "testuser" });
-    testUser?.tasks.push(task._id);
-    await testUser?.save();
+    const task = await Task.create({ name: "Example", creatorId: user._id });
+    user.tasks.push(task._id);
+    await user.save();
 
     return agent
       .get("/tasks")
@@ -98,7 +100,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   it("GET /tasks/:taskId", async () => {
-    const task = await Task.create({ name: "Example", creator: "testuser" });
+    const task = await Task.create({ name: "Example", creatorId: user._id });
 
     return agent
       .get(`/tasks/${task.id}`)
@@ -112,7 +114,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   it("PUT /tasks/:taskId", async () => {
-    const task = await Task.create({ name: "Example", creator: "testuser" });
+    const task = await Task.create({ name: "Example", creatorId: user._id });
 
     const data = { name: "Updated Name" };
 
@@ -134,7 +136,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   it("DELETE /tasks/:taskId", async () => {
-    const task = await Task.create({ name: "Example", creator: "testuser" });
+    const task = await Task.create({ name: "Example", creatorId: user._id });
 
     return agent
       .delete(`/tasks/${task.id}`)

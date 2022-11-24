@@ -4,7 +4,7 @@ interface ITask {
   name: string;
   details?: string;
   due?: Date;
-  creator: string;
+  creatorId: Schema.Types.ObjectId;
 }
 
 export interface ITaskDoc extends Document, ITask {}
@@ -17,8 +17,9 @@ export const TaskSchema = new Schema(
     },
     details: String,
     due: Date,
-    creator: {
-      type: String,
+    creatorId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

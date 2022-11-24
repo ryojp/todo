@@ -13,7 +13,7 @@ const verifyOptions: VerifyOptions = {
 
 // Verify the token sent as a cookie
 export const verifyToken = (
-  req: Request & { username?: string },
+  req: Request & { username?: string; userId?: string },
   _: Response,
   next: NextFunction
 ) => {
@@ -27,7 +27,8 @@ export const verifyToken = (
   }
   verify(token, jwtSecret, verifyOptions, (err, decoded) => {
     if (err || !decoded) return next(new HttpError("Invalid token", 401));
-    req.username = (decoded as JwtPayload).username; // extract username from JWT
+    req.username = (decoded as JwtPayload).username; // extract from JWT
+    req.userId = (decoded as JwtPayload).userId; // extract from JWT
     next();
   });
 };
