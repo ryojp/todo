@@ -1,19 +1,26 @@
 DOCKER_COMPOSE_CONF = docker-compose-dev.yml
 DOCKER_USER = keikekke
 APP_NAME = todo
-GIT_SHA = `git rev-parse HEAD`
+GIT_SHA = $(shell git rev-parse HEAD)
 
-up_build:
-	docker-compose -f $(DOCKER_COMPOSE_CONF) up -d --build
-
-up:
-	docker-compose -f $(DOCKER_COMPOSE_CONF) up -d
+dev:
+	docker compose -f $(DOCKER_COMPOSE_CONF) --profile dev up --remove-orphans -d --build
 
 down:
-	docker-compose -f $(DOCKER_COMPOSE_CONF) down
+	docker compose -f $(DOCKER_COMPOSE_CONF) --profile all down --timeout 2
+
+test:
+	docker compose -f $(DOCKER_COMPOSE_CONF) --profile test up --remove-orphans -d --build
+	docker compose -f docker-compose-dev.yml exec -T frontend-test npm test &
+	docker compose -f docker-compose-dev.yml exec -T api-test npm test &
+
+test_single:
+	docker compose -f $(DOCKER_COMPOSE_CONF) --profile test up --remove-orphans -d --build
+	docker compose -f docker-compose-dev.yml exec -T frontend-test npm test -- --watchAll=false
+	docker compose -f docker-compose-dev.yml exec -T api-test npm test -- --watchAll=false
 
 clean:
-	docker-compose -f $(DOCKER_COMPOSE_CONF) down --volumes
+	docker compose -f $(DOCKER_COMPOSE_CONF) --profile all down --volumes
 
 build:
 	docker build -t $(DOCKER_USER)/$(APP_NAME)-api -t $(DOCKER_USER)/$(APP_NAME)-api:$(GIT_SHA) api; \

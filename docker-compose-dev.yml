@@ -1,6 +1,7 @@
-version: '3.8'
+version: "3.9"
 volumes:
   mongo_data_dev:
+
 
 services:
   frontend:
@@ -15,6 +16,9 @@ services:
     volumes:
       - ./frontend:/frontend
       - /frontend/node_modules
+    profiles:
+      - dev
+      - all
 
   frontend-test:
     restart: always
@@ -24,10 +28,13 @@ services:
     volumes:
       - ./frontend:/frontend
       - /frontend/node_modules
-    command: ["npm", "test"]
+    command: [ "sleep", "infinity" ]
+    profiles:
+      - test
+      - all
 
   mongo:
-    image: 'mongo:6.0'
+    image: "mongo:6.0"
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME:-devuser}
@@ -35,13 +42,16 @@ services:
       - MONGO_INITDB_DATABASE=${MONGO_DBNAME:-TodoDB}
     healthcheck:
       #test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
-      test: 'sleep 3'
+      test: "sleep 3"
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 30s
     volumes:
       - mongo_data_dev:/data/db
+    profiles:
+      - dev
+      - all
 
   api:
     depends_on:
@@ -66,9 +76,12 @@ services:
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
     ports:
       - "4000:4000"
+    profiles:
+      - dev
+      - all
 
   mongo-test:
-    image: 'mongo:6.0'
+    image: "mongo:6.0"
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=testuser
@@ -76,11 +89,14 @@ services:
       - MONGO_INITDB_DATABASE=TestDB
     healthcheck:
       #test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
-      test: 'sleep 3'
+      test: "sleep 3"
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 30s
+    profiles:
+      - test
+      - all
 
   api-test:
     depends_on:
@@ -101,4 +117,7 @@ services:
       - MONGODB_DBNAME=TestDB
       - JWT_SECRET=${JWT_SECRET:-jwtsecret}
       - NODE_ENV=development
-    command: ["npm", "test"]
+    command: [ "sleep", "infinity" ]
+    profiles:
+      - test
+      - all
