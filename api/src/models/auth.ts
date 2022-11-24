@@ -17,6 +17,7 @@ export interface IUserDoc extends Document, IUser {
   comparePassword(candidatePassword: string): Promise<boolean>;
   incLoginAttempts(): Promise<void>;
   isLocked(): boolean;
+  getAuthenticated(password: string): Promise<LoginResult>;
 }
 
 export enum LoginResult {
@@ -27,7 +28,6 @@ export enum LoginResult {
 }
 
 interface UserModel extends Model<IUserDoc> {
-  findByUsername(username: string): Promise<IUserDoc | null>;
   getAuthenticated(username: string, password: string): Promise<LoginResult>;
 }
 
@@ -82,47 +82,47 @@ UserSchema.method<IUserDoc>("isLocked", function (): boolean {
   return this.lockUntil! >= Date.now(); // `!` post-fix exp operator
 });
 
-UserSchema.static(
-  "findByUsername",
-  async function (username: string): Promise<IUserDoc | null> {
-    return this.findOne({ username });
+UserSchema.method<IUserDoc>(
+  "getAuthenticated",
+  async function (password: string): Promise<LoginResult> {
+    // check if the account is currently locked
+    if (this.isLocked()) {
+      // just increment login attempts if account is already locked
+      await this.incLoginAttempts();
+      return LoginResult.MAX_ATTEMPTS;
+    }
+
+    // test for a matching password
+    const matched = await this.comparePassword(password);
+
+    if (!matched) {
+      // password is incorrect, so increment login attempts before responding
+      await this.incLoginAttempts();
+      return LoginResult.PASSWORD_INCORRECT;
+    }
+
+    // if there's no lock or failed attempts, return SUCCESS
+    if (!this.loginAttempts && !this.lockUntil) return LoginResult.SUCCESS;
+
+    // reset attempts and lock info
+    this.loginAttempts = 0;
+    delete this.lockUntil;
+
+    await this.save();
+
+    return LoginResult.SUCCESS;
   }
 );
 
 UserSchema.static(
   "getAuthenticated",
   async function (username: string, password: string): Promise<LoginResult> {
-    const user = await this.findByUsername(username);
+    const user = await this.findOne({ username });
 
     // make sure the user exists
     if (!user) return LoginResult.NOT_FOUND;
 
-    // check if the account is currently locked
-    if (user.isLocked()) {
-      // just increment login attempts if account is already locked
-      await user.incLoginAttempts();
-      return LoginResult.MAX_ATTEMPTS;
-    }
-
-    // test for a matching password
-    const matched = await user.comparePassword(password);
-
-    if (!matched) {
-      // password is incorrect, so increment login attempts before responding
-      await user.incLoginAttempts();
-      return LoginResult.PASSWORD_INCORRECT;
-    }
-
-    // if there's no lock or failed attempts, return SUCCESS
-    if (!user.loginAttempts && !user.lockUntil) return LoginResult.SUCCESS;
-
-    // reset attempts and lock info
-    user.loginAttempts = 0;
-    delete user.lockUntil;
-
-    await user.save();
-
-    return LoginResult.SUCCESS;
+    return user.getAuthenticated(password);
   }
 );
 

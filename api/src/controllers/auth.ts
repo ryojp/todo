@@ -17,6 +17,11 @@ type AuthRespPayload = {
   err?: string;
 };
 
+type TokenPayload = {
+  userId: string;
+  username: string;
+};
+
 // Create a new user
 export const signup = async (
   req: Request,
@@ -44,11 +49,17 @@ export const login = async (
 ) => {
   try {
     const { username, password } = req.body;
-    const result = await User.getAuthenticated(username, password);
+    const user = await User.findOne({ username });
+    if (!user) {
+      return next(new HttpError("Incorrect credentials", 401));
+    }
+
+    const result = await user.getAuthenticated(password);
     switch (result) {
       case LoginResult.SUCCESS:
         // generate JWT and store it in cookie with http-only and secure (if prod)
-        const token = sign({ username }, jwtSecret, signOptions);
+        const payload: TokenPayload = { username, userId: user._id.toString() };
+        const token = sign(payload, jwtSecret, signOptions);
         return res.send({ username, token });
       case LoginResult.MAX_ATTEMPTS:
         return next(
@@ -71,7 +82,7 @@ export const getUser = async (
   res: Response<IUserDoc | { err: string }>,
   next: NextFunction
 ) => {
-  const user = await User.findByUsername(req.params.username);
+  const user = await User.findOne({ username: req.params.username });
   if (!user) {
     return next(new HttpError("No such username", 401));
   }

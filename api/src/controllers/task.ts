@@ -5,15 +5,15 @@ import User from "../models/auth";
 
 // Fetch all the tasks for a given user
 export const allTasks = async (
-  req: Request & { username?: string },
+  req: Request & { username?: string; userId?: string },
   res: Response,
   next: NextFunction
 ) => {
   try {
-    if (!req.username) {
-      return next(new HttpError("Username not found from Request", 400));
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
     }
-    const user = await User.findOne({ username: req.username }).populate<{
+    const user = await User.findById(req.userId).populate<{
       tasks: ITaskDoc;
     }>("tasks");
     if (!user) {
@@ -27,21 +27,21 @@ export const allTasks = async (
 
 // Create a new task
 export const createTask = async (
-  req: Request & { username?: string },
+  req: Request & { username?: string; userId?: string },
   res: Response,
   next: NextFunction
 ) => {
   const body = req.body;
 
   try {
-    if (!req.username) {
-      return next(new HttpError("Username not found from Request", 400));
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
     }
-    const user = await User.findByUsername(req.username);
+    const user = await User.findById(req.userId);
     if (!user) {
       return next(new HttpError("User not found", 400));
     }
-    const task = new Task({ ...body, creator: user.username });
+    const task = new Task({ ...body, creatorId: user._id });
     await task.save();
     user.tasks.push(task._id);
     await user.save();
@@ -53,19 +53,19 @@ export const createTask = async (
 
 // Get the task with the given ID
 export const getTask = async (
-  req: Request & { username?: string },
+  req: Request & { username?: string; userId?: string },
   res: Response,
   next: NextFunction
 ) => {
   try {
-    if (!req.username) {
-      return next(new HttpError("Username not found from Request", 400));
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
     }
     const doc = await Task.findById(req.params.taskId);
     if (!doc) {
       return next(new HttpError("Task not found", 400));
     }
-    if (doc.creator !== req.username) {
+    if (doc.creatorId.toString() !== req.userId) {
       return next(new HttpError("Forbidden", 403));
     }
     return res.json(doc);
@@ -76,17 +76,17 @@ export const getTask = async (
 
 // Update the task with the given ID
 export const updateTask = async (
-  req: Request & { username?: string },
+  req: Request & { username?: string; userId?: string },
   res: Response,
   next: NextFunction
 ) => {
   const body = req.body;
 
   try {
-    if (!req.username) {
-      return next(new HttpError("Username not found from Request", 400));
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
     }
-    const user = await User.findByUsername(req.username);
+    const user = await User.findById(req.userId);
     if (!user) {
       return next(new HttpError("User not found", 400));
     }
@@ -94,7 +94,7 @@ export const updateTask = async (
     if (!doc) {
       return next(new HttpError("Task not found", 400));
     }
-    if (doc.creator !== req.username) {
+    if (doc.creatorId.toString() !== req.userId) {
       return next(new HttpError("Forbidden", 403));
     }
     doc.set(body);
@@ -107,19 +107,19 @@ export const updateTask = async (
 
 // Delete the task with the given ID
 export const deleteTask = async (
-  req: Request & { username?: string },
+  req: Request & { username?: string; userId?: string },
   res: Response,
   next: NextFunction
 ) => {
   try {
-    if (!req.username) {
-      return next(new HttpError("Username not found from Request", 400));
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
     }
     let doc = await Task.findById(req.params.taskId);
     if (!doc) {
       return next(new HttpError("Task not found", 400));
     }
-    if (doc.creator !== req.username) {
+    if (doc.creatorId.toString() !== req.userId) {
       return next(new HttpError("Forbidden", 403));
     }
     await doc.delete();
