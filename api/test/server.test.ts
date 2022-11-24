@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 import request from "supertest";
 import Task from "../src/models/task";
 import app from "../src/app";
@@ -10,8 +10,6 @@ const agent = request.agent(app);
 
 describe("Test auth and /tasks endpoints", () => {
   mongoose.Promise = global.Promise;
-  let token: string;
-  let user: IUserDoc & { _id: Schema.Types.ObjectId };
 
   // Connect to MongoDB before running each test case
   // Create a test user and login
@@ -25,48 +23,48 @@ describe("Test auth and /tasks endpoints", () => {
       .catch((err) => {
         console.log("Error connecting to the database\n" + err);
       });
+  });
 
-    const testUser = { username: "testuser", password: "pass" };
-
-    // Sign up if not done yet
-    const exists = await User.findOne({ username: testUser.username });
-    if (!exists) {
-      user = await User.create(testUser);
-      console.log("Created a test user.");
-    } else {
-      user = exists;
-    }
-
+  const _createUser = async (
+    username: string,
+    password: string
+  ): Promise<{
+    user: IUserDoc & {
+      _id: mongoose.Types.ObjectId;
+    };
+    token: string;
+  }> => {
+    // create user
+    const _user = await User.create({ username, password });
     // Login
-    const res = await agent.post("/auth/login").send(testUser).expect(200);
-    try {
-      token = res.body.token;
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
-  // Drop Task collection after running each test case
-  afterEach((done) => {
-    Task.deleteMany({}, async () => {
-      done();
-    });
-  });
+    const res = await agent
+      .post("/auth/login")
+      .send({ username, password })
+      .expect(200);
+    const _token = res.body.token;
+    return { user: _user, token: _token };
+  };
 
   // Delete the test user and disconnect from the MongoDB
   afterAll(async () => {
     await User.deleteMany({});
+    await Task.deleteMany({});
     await mongoose.disconnect();
   });
 
-  it("GET /tasks", async () => {
-    const task = await Task.create({ name: "Example", creatorId: user._id });
-    user.tasks.push(task._id);
-    await user.save();
+  test("GET /tasks", async () => {
+    const res = await _createUser("testuser0", "password");
+
+    const task = await Task.create({
+      name: "Example 1",
+      creatorId: res.user._id,
+    });
+    res.user.tasks.push(task._id);
+    await res.user.save();
 
     return agent
       .get("/tasks")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${res.token}`)
       .expect(200)
       .then((response) => {
         // Check type and length
@@ -79,12 +77,13 @@ describe("Test auth and /tasks endpoints", () => {
       });
   });
 
-  it("POST /tasks", async () => {
+  test("POST /tasks", async () => {
+    const res = await _createUser("testuser1", "password");
     const data = { name: "Sample" };
 
     return agent
       .post("/tasks")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${res.token}`)
       .send(data)
       .expect(200)
       .then(async (response) => {
@@ -99,12 +98,16 @@ describe("Test auth and /tasks endpoints", () => {
       });
   });
 
-  it("GET /tasks/:taskId", async () => {
-    const task = await Task.create({ name: "Example", creatorId: user._id });
+  test("GET /tasks/:taskId", async () => {
+    const res = await _createUser("testuser2", "password");
+    const task = await Task.create({
+      name: "Example 2",
+      creatorId: res.user._id,
+    });
 
     return agent
       .get(`/tasks/${task.id}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${res.token}`)
       .expect(200)
       .then(async (response) => {
         // Check the response
@@ -113,14 +116,18 @@ describe("Test auth and /tasks endpoints", () => {
       });
   });
 
-  it("PUT /tasks/:taskId", async () => {
-    const task = await Task.create({ name: "Example", creatorId: user._id });
+  test("PUT /tasks/:taskId", async () => {
+    const res = await _createUser("testuser3", "password");
+    const task = await Task.create({
+      name: "Example 3",
+      creatorId: res.user._id,
+    });
 
     const data = { name: "Updated Name" };
 
     return agent
       .put(`/tasks/${task.id}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${res.token}`)
       .send(data)
       .expect(200)
       .then(async (response) => {
@@ -135,21 +142,27 @@ describe("Test auth and /tasks endpoints", () => {
       });
   });
 
-  it("DELETE /tasks/:taskId", async () => {
-    const task = await Task.create({ name: "Example", creatorId: user._id });
+  test("DELETE /tasks/:taskId", async () => {
+    const res = await _createUser("testuser4", "password");
+    const task = await Task.create({
+      name: "Example 4",
+      creatorId: res.user._id,
+    });
 
     return agent
       .delete(`/tasks/${task.id}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${res.token}`)
       .expect(200)
       .then(async () => {
         expect(await Task.findOne({ _id: task._id })).toBeFalsy();
       });
   });
 
-  it("Duplicate username for /auth/signup", async () => {
-    const user2 = { username: "testuser", password: "another" };
-    const res = await agent.post("/auth/signup").send(user2);
+  test("Duplicate username for /auth/signup", async () => {
+    await _createUser("testuser5", "password");
+    const res = await agent
+      .post("/auth/signup")
+      .send({ username: "testuser5", password: "foobar" });
     expect(res.status).toEqual(500);
     expect(res.body).toHaveProperty("error"); // should receive an error message
   });

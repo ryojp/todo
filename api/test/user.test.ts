@@ -30,8 +30,8 @@ describe("Test User DB", () => {
     });
   });
 
-  it("Authentication just after creation", async () => {
-    const username = "john";
+  test("Authentication just after creation", async () => {
+    const username = "john1";
     const password = "abc";
     await User.create({ username, password });
 
@@ -50,8 +50,8 @@ describe("Test User DB", () => {
     expect(result).toBe(LoginResult.PASSWORD_INCORRECT);
   });
 
-  it("Unlock from too many trials", async () => {
-    const username = "john";
+  test("Unlock from too many trials", async () => {
+    const username = "john2";
     const password = "abc";
     await User.create({ username, password });
 
@@ -76,8 +76,8 @@ describe("Test User DB", () => {
     expect(result).toBe(LoginResult.SUCCESS);
   });
 
-  it("Too many failed logins", async () => {
-    const username = "john";
+  test("Too many failed logins", async () => {
+    const username = "john3";
     const password = "abc";
     await User.create({ username, password });
 
@@ -98,8 +98,8 @@ describe("Test User DB", () => {
     expect(result).toBe(LoginResult.MAX_ATTEMPTS);
   });
 
-  it("Authentication after updating password", async () => {
-    const username = "john";
+  test("Authentication after updating password", async () => {
+    const username = "john4";
     const password = "abc";
     const user = await User.create({ username, password });
 
