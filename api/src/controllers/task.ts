@@ -14,7 +14,7 @@ export const allTasks = async (
       return next(new HttpError("userId not found from Request", 400));
     }
     const user = await User.findById(req.userId).populate<{
-      tasks: ITaskDoc;
+      tasks: Array<ITaskDoc>;
     }>("tasks");
     if (!user) {
       return next(new HttpError("User not found", 400));
