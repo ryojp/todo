@@ -14,11 +14,5 @@ jobs:
       - name: Checkout the most recent commit on this branch
         uses: actions/checkout@v3
 
-      - name: Build and start the test env
-        run: make test
-
-      - name: Test frontend
-        run: docker compose -f docker-compose-dev.yml exec -T frontend-test npm test -- --watchAll=false
-
-      - name: Test api
-        run: docker compose -f docker-compose-dev.yml exec -T api-test npm test -- --watchAll=false
+      - name: Build and run the tests
+        run: make test_single

@@ -7,10 +7,17 @@ dev:
 	docker compose -f $(DOCKER_COMPOSE_CONF) --profile dev up --remove-orphans -d --build
 
 down:
-	docker compose -f $(DOCKER_COMPOSE_CONF) --profile all down
+	docker compose -f $(DOCKER_COMPOSE_CONF) --profile all down --timeout 2
 
 test:
 	docker compose -f $(DOCKER_COMPOSE_CONF) --profile test up --remove-orphans -d --build
+	docker compose -f docker-compose-dev.yml exec -T frontend-test npm test &
+	docker compose -f docker-compose-dev.yml exec -T api-test npm test &
+
+test_single:
+	docker compose -f $(DOCKER_COMPOSE_CONF) --profile test up --remove-orphans -d --build
+	docker compose -f docker-compose-dev.yml exec -T frontend-test npm test -- --watchAll=false
+	docker compose -f docker-compose-dev.yml exec -T api-test npm test -- --watchAll=false
 
 clean:
 	docker compose -f $(DOCKER_COMPOSE_CONF) --profile all down --volumes
