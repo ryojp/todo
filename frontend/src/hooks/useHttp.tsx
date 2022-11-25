@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
 import { useContext } from "react";
 import AuthContext from "../contexts/auth-context";
@@ -41,8 +41,43 @@ const useHttp = () => {
     },
   });
 
+  const refresh = async () => {
+    const res = await client.post("/auth/token", {
+      refresh_token: authCtx.refreshToken,
+    });
+    return res.data?.token;
+  };
+
+  const refreshIntercept = client.interceptors.response.use(
+    (res) => res,
+    async (err: AxiosError) => {
+      const originalConfig: AxiosRequestConfig & { _retry?: boolean } =
+        err.config;
+      if (err.response?.status === 401 && !originalConfig?._retry) {
+        originalConfig._retry = true;
+        try {
+          const token = await refresh();
+          if (!token) {
+            return Promise.reject(err);
+          }
+          authCtx.postRefresh(token);
+          return client({
+            ...originalConfig,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        } catch (_err) {
+          return Promise.reject(_err);
+        }
+      }
+      return Promise.reject(err);
+    }
+  );
+
   return {
     client,
+    refreshIntercept,
     //...state,
     //dispatch,
   };

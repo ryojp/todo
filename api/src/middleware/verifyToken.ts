@@ -1,15 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { verify, VerifyOptions, Algorithm, JwtPayload } from "jsonwebtoken";
+import { verify, JwtPayload } from "jsonwebtoken";
+import { verifyOptions } from "../controllers/jwt_options";
 
 import { jwtSecret } from "../env";
-import { signOptions } from "../controllers/auth";
 import { HttpError } from "./error";
-
-// JWT Verify options
-const verifyOptions: VerifyOptions = {
-  algorithms: [signOptions.algorithm] as Algorithm[],
-  issuer: signOptions.issuer,
-};
 
 // Verify the token sent as a cookie
 export const verifyToken = (

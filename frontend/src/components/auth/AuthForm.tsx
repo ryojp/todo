@@ -18,13 +18,14 @@ const AuthForm: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const authCtx = useContext(AuthContext);
   const taskCtx = useContext(TaskContext);
-  const { client } = useHttp();
+  const { client, refreshIntercept } = useHttp();
 
   const handleLogin = async (data: FormValues) => {
     try {
+      client.interceptors.response.eject(refreshIntercept);
       const res = await client.post("/auth/login", data);
-      if (res.data.token) {
-        authCtx.login(res.data.token);
+      if (res.data.token && res.data.refreshToken) {
+        authCtx.login(res.data.token, res.data.refreshToken);
         loadTasks(res.data.token);
       }
       reset({ username: "", password: "" });
@@ -36,6 +37,7 @@ const AuthForm: React.FC = () => {
 
   const handleSignup = async (data: FormValues) => {
     try {
+      client.interceptors.response.eject(refreshIntercept);
       await client.post("/auth/signup", data);
       setIsLogin(true);
     } catch (err) {
