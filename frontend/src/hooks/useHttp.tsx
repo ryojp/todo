@@ -48,7 +48,7 @@ const useHttp = () => {
     return res.data?.token;
   };
 
-  client.interceptors.response.use(
+  const refreshIntercept = client.interceptors.response.use(
     (res) => res,
     async (err: AxiosError) => {
       const originalConfig: AxiosRequestConfig & { _retry?: boolean } =
@@ -77,6 +77,7 @@ const useHttp = () => {
 
   return {
     client,
+    refreshIntercept,
     //...state,
     //dispatch,
   };
