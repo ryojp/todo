@@ -23,8 +23,8 @@ const AuthForm: React.FC = () => {
   const handleLogin = async (data: FormValues) => {
     try {
       const res = await client.post("/auth/login", data);
-      if (res.data.token) {
-        authCtx.login(res.data.token);
+      if (res.data.token && res.data.refreshToken) {
+        authCtx.login(res.data.token, res.data.refreshToken);
         loadTasks(res.data.token);
       }
       reset({ username: "", password: "" });
