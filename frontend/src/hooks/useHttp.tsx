@@ -53,7 +53,7 @@ const useHttp = () => {
     async (err: AxiosError) => {
       const originalConfig: AxiosRequestConfig & { _retry?: boolean } =
         err.config;
-      if (err.response?.status == 401 && !originalConfig?._retry) {
+      if (err.response?.status === 401 && !originalConfig?._retry) {
         originalConfig._retry = true;
         try {
           const token = await refresh();
