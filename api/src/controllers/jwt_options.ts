@@ -4,7 +4,7 @@ import { nodeEnv } from "../env";
 // JWT Sign options
 export const signOptions: SignOptions = {
   algorithm: "HS256",
-  expiresIn: "10s",
+  expiresIn: "1hr",
   issuer: `github.com/ryojp/todo:${nodeEnv}`,
 };
 
@@ -13,3 +13,5 @@ export const verifyOptions: VerifyOptions = {
   algorithms: [signOptions.algorithm] as Algorithm[],
   issuer: signOptions.issuer,
 };
+
+export const refreshTokenExpiresIn = "7d";

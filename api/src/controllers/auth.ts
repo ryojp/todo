@@ -3,7 +3,11 @@ import { NextFunction, Request, Response } from "express";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { jwtSecret } from "../env";
 import { HttpError } from "../middleware/error";
-import { signOptions, verifyOptions } from "./jwt_options";
+import {
+  refreshTokenExpiresIn,
+  signOptions,
+  verifyOptions,
+} from "./jwt_options";
 
 type AuthRespPayload = {
   username?: string;
@@ -57,7 +61,7 @@ export const login = async (
         const token = sign(payload, jwtSecret, signOptions);
         const refreshToken = sign(payload, jwtSecret, {
           ...signOptions,
-          expiresIn: "7d",
+          expiresIn: refreshTokenExpiresIn,
         });
         return res.send({
           username,
@@ -109,6 +113,7 @@ export const refresh = async (
     const token = sign(payload, jwtSecret, signOptions);
     return res.send({
       username: req.username,
+      refreshToken: refresh_token, // do not update for now
       token,
     });
   } catch (err) {
