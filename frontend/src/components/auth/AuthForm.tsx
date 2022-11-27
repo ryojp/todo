@@ -1,5 +1,11 @@
 import React, { useContext, useState } from "react";
-import { Backdrop, Button, CircularProgress, TextField } from "@mui/material";
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  SnackbarCloseReason,
+  TextField,
+} from "@mui/material";
 import { Container, Stack } from "@mui/system";
 import { useForm } from "react-hook-form";
 import AuthContext from "../../contexts/auth-context";
@@ -7,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import TaskContext from "../../contexts/task-context";
 import useHttp from "../../hooks/useHttp";
 import { Task } from "../../types/task";
+import { AxiosError } from "axios";
+import CustomSnackbar from "../CustomSnackbar";
 
 type FormValues = {
   username: string;
@@ -21,10 +29,11 @@ const AuthForm: React.FC = () => {
   const taskCtx = useContext(TaskContext);
   const { client, refreshIntercept } = useHttp();
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = async (data: FormValues) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       client.interceptors.response.eject(refreshIntercept);
       const res = await client.post("/auth/login", data);
       if (res.data.token && res.data.refreshToken) {
@@ -36,18 +45,30 @@ const AuthForm: React.FC = () => {
       navigate("/");
     } catch (err) {
       console.log(err);
+      if (err instanceof AxiosError) {
+        setErrorMessage(err.message);
+      } else {
+        setErrorMessage("Unknown error");
+      }
+      setIsLoading(false);
     }
   };
 
   const handleSignup = async (data: FormValues) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       client.interceptors.response.eject(refreshIntercept);
       await client.post("/auth/signup", data);
       setIsLoading(false);
       setIsLoginMode(true); // switch to Login mode
     } catch (err) {
       console.log(err);
+      if (err instanceof AxiosError) {
+        setErrorMessage(err.message);
+      } else {
+        setErrorMessage("Unknown error");
+      }
+      setIsLoading(false);
     }
   };
 
@@ -72,9 +93,28 @@ const AuthForm: React.FC = () => {
     };
 
     setIsLoading(true);
-    const res = await client.get<Task[]>("/tasks", authHead);
-    taskCtx.setTasks(res.data);
+    try {
+      const res = await client.get<Task[]>("/tasks", authHead);
+      taskCtx.setTasks(res.data);
+    } catch (err) {
+      console.log(err);
+      if (err instanceof AxiosError) {
+        setErrorMessage(err.message);
+      } else {
+        setErrorMessage("Unknown error");
+      }
+    }
     setIsLoading(false);
+  };
+
+  const handleCloseSnack = (
+    _event: Event | React.SyntheticEvent<any, Event>,
+    reason: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setErrorMessage("");
   };
 
   if (isLoading) {
@@ -111,6 +151,13 @@ const AuthForm: React.FC = () => {
             : "Login with an existing account"}
         </Button>
       </Stack>
+      <CustomSnackbar
+        severity="error"
+        message={errorMessage}
+        open={errorMessage !== ""}
+        handleClose={handleCloseSnack}
+        showDuration={2000}
+      />
     </Container>
   );
 };
