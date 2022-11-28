@@ -8,7 +8,7 @@ const Main: React.FC = () => {
   const authCtx = useContext(AuthContext);
 
   if (!authCtx.isLoggedIn) {
-    return <Navigate to="/auth" />;
+    return <Navigate to="/auth" replace={true} />;
   }
 
   return (

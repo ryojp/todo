@@ -42,7 +42,7 @@ const AuthForm: React.FC = () => {
       }
       setIsLoading(false);
       reset({ username: "", password: "" });
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (err) {
       console.log(err);
       if (err instanceof AxiosError) {
