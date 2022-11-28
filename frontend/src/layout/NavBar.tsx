@@ -29,7 +29,7 @@ const NavBar = () => {
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-              Todo App
+              ToDo App
             </Link>
           </Typography>
           {!authCtx.isLoggedIn && (

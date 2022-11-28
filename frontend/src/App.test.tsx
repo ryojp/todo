@@ -14,6 +14,6 @@ test("renders NavBar", () => {
       </AuthContextProvider>
     </BrowserRouter>
   );
-  const linkElement = screen.getByText(/Todo App/);
+  const linkElement = screen.getByText(/ToDo App/);
   expect(linkElement).toBeInTheDocument();
 });
