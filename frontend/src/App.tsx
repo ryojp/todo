@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Fragment } from "react";
 import { Route, Routes } from "react-router-dom";
 import AuthForm from "./components/auth/AuthForm";
@@ -10,6 +10,7 @@ const App = () => {
   return (
     <Fragment>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <NavBar />
         <Routes>
           <Route path="/auth" element={<AuthForm />} />
