@@ -27,5 +27,5 @@ Sign up and login are required before you can acccess resource-related APIs.
   - `curl -XPUT -H "Authorization: Bearer {{your_token}}" -H "Content-Type: application/json" -d '{"name":"Learn Yoga"}' http://localhost:4000/tasks/:taskId`
     - Substitute `:taskId` with the real task id obtained from either `List tasks` or `Create a new task` results.
 - Delete an existing task
-  - `curl -XDELETE -H "Authorization: Bearer {{your_token}}" -H "Content-Type: application/json" -d '{"name":"Learn Yoga"}' http://localhost:4000/tasks/:taskId`
+  - `curl -XDELETE -H "Authorization: Bearer {{your_token}}" -H "Content-Type: application/json" http://localhost:4000/tasks/:taskId`
     - Substitute `:taskId` with the real task id obtained from either `List tasks` or `Create a new task` results.
