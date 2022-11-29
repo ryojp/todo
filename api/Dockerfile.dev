@@ -1,5 +1,5 @@
 FROM node:lts-slim
-WORKDIR /api
+WORKDIR /app/api
 RUN chown $(id -u node):$(id -g node) $(pwd)
 USER node
 RUN chown $(id -u):$(id -g) $(pwd)

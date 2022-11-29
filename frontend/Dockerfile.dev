@@ -1,5 +1,5 @@
 FROM node:lts-slim
-WORKDIR /frontend
+WORKDIR /app/frontend
 RUN chown $(id -u node):$(id -g node) $(pwd)
 USER node
 COPY --chown=node:node ./package.json .
