@@ -1,4 +1,4 @@
-import { Snackbar, SnackbarCloseReason } from "@mui/material";
+import { Snackbar, SnackbarCloseReason, SnackbarOrigin } from "@mui/material";
 import Alert, { AlertColor } from "@mui/material/Alert";
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
   severity: AlertColor;
   message: string;
   showDuration?: number;
+  position?: SnackbarOrigin;
 };
 
 const CustomSnackbar: React.FC<Props> = ({
@@ -18,12 +19,14 @@ const CustomSnackbar: React.FC<Props> = ({
   severity,
   message,
   showDuration,
+  position,
 }) => {
   return (
     <Snackbar
       open={open}
       autoHideDuration={showDuration || 3000}
       onClose={handleClose}
+      anchorOrigin={position || { vertical: "top", horizontal: "center" }}
     >
       <Alert severity={severity} elevation={6} variant="filled">
         {message}

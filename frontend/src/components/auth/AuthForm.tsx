@@ -46,7 +46,7 @@ const AuthForm: React.FC = () => {
     } catch (err) {
       console.log(err);
       if (err instanceof AxiosError) {
-        setErrorMessage(err.message);
+        setErrorMessage(err.response?.data?.error || err.message);
       } else {
         setErrorMessage("Unknown error");
       }
@@ -64,7 +64,7 @@ const AuthForm: React.FC = () => {
     } catch (err) {
       console.log(err);
       if (err instanceof AxiosError) {
-        setErrorMessage(err.message);
+        setErrorMessage(err.response?.data?.error || err.message);
       } else {
         setErrorMessage("Unknown error");
       }
@@ -99,7 +99,7 @@ const AuthForm: React.FC = () => {
     } catch (err) {
       console.log(err);
       if (err instanceof AxiosError) {
-        setErrorMessage(err.message);
+        setErrorMessage(err.response?.data?.error || err.message);
       } else {
         setErrorMessage("Unknown error");
       }
@@ -156,7 +156,7 @@ const AuthForm: React.FC = () => {
         message={errorMessage}
         open={errorMessage !== ""}
         handleClose={handleCloseSnack}
-        showDuration={2000}
+        showDuration={4000}
       />
     </Container>
   );
