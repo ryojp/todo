@@ -127,6 +127,54 @@ export const refresh = async (
   }
 };
 
+// Update user profile
+export const updateUser = async (
+  req: Request & { username?: string; userId?: string },
+  res: Response<AuthRespPayload>,
+  next: NextFunction
+) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const msg = errors.array({ onlyFirstError: true })[0]?.msg;
+    return next(new HttpError(msg, 400));
+  }
+
+  try {
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
+    }
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return next(new HttpError("User not found", 400));
+    }
+
+    switch (req.query?.update) {
+      case "username":
+        const { username } = req.body;
+        if (!username) {
+          return next(new HttpError("Invalid request body", 400));
+        }
+        user.username = username;
+        break;
+      case "password":
+        const { password } = req.body;
+        if (!password) {
+          return next(new HttpError("Invalid request body", 400));
+        }
+        user.password = password;
+        break;
+      default:
+        return next(new HttpError("Invalid update type", 400));
+    }
+
+    await user.save();
+    res.status(204).send();
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError("Failed to update the user profile", 500));
+  }
+};
+
 // Get the user with the given username
 export const getUser = async (
   req: Request<{ username: string }>,
