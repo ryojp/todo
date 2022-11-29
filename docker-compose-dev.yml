@@ -41,12 +41,11 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD:-somepass}
       - MONGO_INITDB_DATABASE=${MONGO_DBNAME:-TodoDB}
     healthcheck:
-      #test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
-      test: "sleep 3"
-      interval: 10s
-      timeout: 10s
+      test: echo 'db.runCommand("ping").ok' | mongosh mongo:27017/test --quiet
+      interval: 5s
+      timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 10s
     volumes:
       - mongo_data_dev:/data/db
     profiles:
@@ -88,12 +87,11 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=testpass
       - MONGO_INITDB_DATABASE=TestDB
     healthcheck:
-      #test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
-      test: "sleep 3"
-      interval: 10s
-      timeout: 10s
+      test: echo 'db.runCommand("ping").ok' | mongosh mongo:27017/test --quiet
+      interval: 5s
+      timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 10s
     profiles:
       - test
       - all

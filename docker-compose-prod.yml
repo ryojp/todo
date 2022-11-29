@@ -3,6 +3,7 @@ volumes:
   mongo_data:
   certificates:
 
+
 services:
   nginx:
     depends_on:
@@ -17,7 +18,7 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
     volumes:
-      -  certificates:/etc/ssl/certs/nginx:ro,cached
+      - certificates:/etc/ssl/certs/nginx:ro,cached
     ports:
       - "443:443"
 
@@ -46,12 +47,11 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_DBNAME}
     healthcheck:
-      #test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
-      test: 'sleep 3'
-      interval: 10s
-      timeout: 10s
+      test: echo 'db.runCommand("ping").ok' | mongosh mongo:27017/test --quiet
+      interval: 5s
+      timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 10s
     volumes:
       - mongo_data:/data/db
 
