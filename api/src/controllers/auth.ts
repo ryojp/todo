@@ -8,6 +8,7 @@ import {
   signOptions,
   verifyOptions,
 } from "./jwt_options";
+import { validationResult } from "express-validator";
 
 type AuthRespPayload = {
   username?: string;
@@ -27,6 +28,11 @@ export const signup = async (
   res: Response<AuthRespPayload>,
   next: NextFunction
 ) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const msg = errors.array({ onlyFirstError: true })[0]?.msg;
+    return next(new HttpError(msg, 400));
+  }
   try {
     const { username, password } = req.body;
     await User.create({ username, password });

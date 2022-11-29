@@ -53,7 +53,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   test("GET /tasks", async () => {
-    const res = await _createUser("testuser0", "password");
+    const res = await _createUser("testuser0", "asdfASDF1234");
 
     const task = await Task.create({
       name: "Example 1",
@@ -78,7 +78,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   test("POST /tasks", async () => {
-    const res = await _createUser("testuser1", "password");
+    const res = await _createUser("testuser1", "asdfASDF1234");
     const data = { name: "Sample" };
 
     return agent
@@ -99,7 +99,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   test("GET /tasks/:taskId", async () => {
-    const res = await _createUser("testuser2", "password");
+    const res = await _createUser("testuser2", "asdfASDF1234");
     const task = await Task.create({
       name: "Example 2",
       creatorId: res.user._id,
@@ -117,7 +117,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   test("PUT /tasks/:taskId", async () => {
-    const res = await _createUser("testuser3", "password");
+    const res = await _createUser("testuser3", "asdfASDF1234");
     const task = await Task.create({
       name: "Example 3",
       creatorId: res.user._id,
@@ -143,7 +143,7 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   test("DELETE /tasks/:taskId", async () => {
-    const res = await _createUser("testuser4", "password");
+    const res = await _createUser("testuser4", "asdfASDF1234");
     const task = await Task.create({
       name: "Example 4",
       creatorId: res.user._id,
@@ -159,11 +159,11 @@ describe("Test auth and /tasks endpoints", () => {
   });
 
   test("Duplicate username for /auth/signup", async () => {
-    await _createUser("testuser5", "password");
+    await _createUser("testuser5", "asdfASDF1234");
     const res = await agent
       .post("/auth/signup")
-      .send({ username: "testuser5", password: "foobar" });
-    expect(res.status).toEqual(500);
+      .send({ username: "testuser5", password: "asdfASDF1234" });
+    expect(res.status).toEqual(400);
     expect(res.body).toHaveProperty("error"); // should receive an error message
   });
 });

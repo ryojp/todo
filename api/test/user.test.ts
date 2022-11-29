@@ -32,7 +32,7 @@ describe("Test User DB", () => {
 
   test("Authentication just after creation", async () => {
     const username = "john1";
-    const password = "abc";
+    const password = "abcABC123";
     await User.create({ username, password });
 
     let result: LoginResult;
@@ -52,7 +52,7 @@ describe("Test User DB", () => {
 
   test("Unlock from too many trials", async () => {
     const username = "john2";
-    const password = "abc";
+    const password = "abcABC123";
     await User.create({ username, password });
 
     let result: LoginResult;
@@ -78,7 +78,7 @@ describe("Test User DB", () => {
 
   test("Too many failed logins", async () => {
     const username = "john3";
-    const password = "abc";
+    const password = "abcABC123";
     await User.create({ username, password });
 
     let result: LoginResult;
@@ -100,7 +100,7 @@ describe("Test User DB", () => {
 
   test("Authentication after updating password", async () => {
     const username = "john4";
-    const password = "abc";
+    const password = "abcABC123";
     const user = await User.create({ username, password });
 
     // update password
