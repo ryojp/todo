@@ -27,11 +27,15 @@ After the dev environment starts up, the frontend client listens requests at `ht
 
 ### Using Docker-Compose
 
-Once you have prepared environment variables used in `docker-compose-prod.yml` (through target service's VAR option or `.env` file), you are ready to start the production-ready server with `docker-compose -f docker-compose-prod.yml up --build`.  
-Major differences from the dev version are:
+After copying `.env.dev` to `.env.prod` and modifying the content, you can start the production-ready server with `docker compose -f docker-compose-prod.yml --env-file .env.prod up --build`
+To stop the server, run `docker compose -f docker-compose-prod.yml down`
 
-- No bind mounts (because hot-reload is unnecessary in production).
-- No test containers.
+Alternatively, if you name your environment file as `.env`, you can omit `--env-file .env` as this is the default filename docker expects.
+
+One pitfall is that the docker volume for MongoDB (`mongo_data`) is shared between `docker-compose-dev.yml` and `docker-compose-prod.yml`.  
+So, if you have run `make` to start up the develpment environment before, you have to set the same DB environments as before to connect to the MongoDB.  
+Or, if you are okay to re-create the volume, run `make clean` to clean up the volume and run `docker compose -f docker-compose-prod.yml --env-file .env.prod up --build` to start up the production server.  
+Likewise, if you want to delete the MongoDB volume when you stop the production server, run `docker compose -f docker-compose-prod.yml down --volumes`
 
 ### Using Kubernetes
 
