@@ -2,3 +2,4 @@
 !.env.dev
 **/cookie
 .firebase
+.vscode
