@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  frontend-test:
+    command: [ "sleep", "infinity" ]
+
+  api-test:
+    command: [ "sleep", "infinity" ]
