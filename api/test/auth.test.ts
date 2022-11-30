@@ -11,7 +11,7 @@ import Task from "../src/models/task";
 
 const agent = request.agent(app);
 
-describe("Test User DB", () => {
+describe("Test User DB and /auth endpoints", () => {
   mongoose.Promise = global.Promise;
 
   // Connect to MongoDB before running each test case
@@ -166,5 +166,124 @@ describe("Test User DB", () => {
 
     // assert the related tasks are deleted from the DB
     expect(await Task.find({ creatorId: userId })).toHaveLength(0);
+  });
+
+  test("Duplicate username for /auth/signup", async () => {
+    await agent
+      .post("/auth/signup")
+      .send({ username: "john6", password: "asdfASDF1234" })
+      .expect(201);
+
+    const res = await agent
+      .post("/auth/signup")
+      .send({ username: "john6", password: "asdfASDF1234" });
+    expect(res.status).toEqual(400);
+    expect(res.body).toHaveProperty("error"); // should receive an error message
+  });
+
+  test("Unknown username in /auth/login", async () => {
+    const username = "john7";
+    const password = "abcABC123";
+
+    // create a user
+    await agent.post("/auth/signup").send({ username, password }).expect(201);
+
+    await agent
+      .post("/auth/login")
+      .send({ username: "someoneElse", password })
+      .expect(401);
+  });
+
+  test("Max login attempt in /auth/login", async () => {
+    const username = "john8";
+    const password = "abcABC123";
+
+    // create a user
+    await agent.post("/auth/signup").send({ username, password }).expect(201);
+
+    // repeatedly fail to login
+    let i = 0;
+    for (; i < MAX_LOGIN_ATTEMPTS; i++) {
+      await agent
+        .post("/auth/login")
+        .send({ username, password: password + i })
+        .expect(401);
+    }
+
+    // expect max login attempt reached, even with correct credentials
+    await agent.post("/auth/login").send({ username, password }).expect(429);
+    await agent
+      .post("/auth/login")
+      .send({ username, password: password + i })
+      .expect(429);
+  });
+
+  test("Success in /auth/refresh", async () => {
+    const username = "john9";
+    const password = "abcABC123";
+
+    // create a user
+    await agent.post("/auth/signup").send({ username, password }).expect(201);
+
+    // obtain a token and a refresh_token
+    const res = await agent
+      .post("/auth/login")
+      .send({ username, password })
+      .expect(200);
+    const refreshToken = res.body.refreshToken;
+    const token = res.body.token;
+
+    // issue token-refresh request
+    const res2 = await agent
+      .post("/auth/token")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ refresh_token: refreshToken })
+      .expect(200);
+
+    // assert the response contains both the token and refresh_token
+    expect(res2.body.token).toBeTruthy();
+    expect(res2.body.refreshToken).toBeTruthy();
+  });
+
+  test("Success in updating username at /auth/update", async () => {
+    const username = "john10";
+    const password = "abcABC123";
+
+    // create a user
+    await agent.post("/auth/signup").send({ username, password }).expect(201);
+
+    // obtain a token
+    const res = await agent
+      .post("/auth/login")
+      .send({ username, password })
+      .expect(200);
+    const token = res.body.token;
+
+    await agent
+      .patch("/auth/user?update=username")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ username: username + "_new" })
+      .expect(204);
+  });
+
+  test("Success in updating password at /auth/update", async () => {
+    const username = "john11";
+    const password = "abcABC123";
+
+    // create a user
+    await agent.post("/auth/signup").send({ username, password }).expect(201);
+
+    // obtain a token
+    const res = await agent
+      .post("/auth/login")
+      .send({ username, password })
+      .expect(200);
+    const token = res.body.token;
+
+    await agent
+      .patch("/auth/user?update=password")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ password: password + "_new" })
+      .expect(204);
   });
 });

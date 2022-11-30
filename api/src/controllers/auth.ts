@@ -185,16 +185,3 @@ export const deleteUser = async (
     return next(err);
   }
 };
-
-// Get the user with the given username
-export const getUser = async (
-  req: Request<{ username: string }>,
-  res: Response<IUserDoc | { err: string }>,
-  next: NextFunction
-) => {
-  const user = await User.findOne({ username: req.params.username });
-  if (!user) {
-    return next(new HttpError("No such username", 401));
-  }
-  res.json(user);
-};
