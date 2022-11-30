@@ -5,7 +5,7 @@ import User from "../models/auth";
 
 // Fetch all the tasks for a given user
 export const allTasks = async (
-  req: Request & { username?: string; userId?: string },
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -27,7 +27,7 @@ export const allTasks = async (
 
 // Create a new task
 export const createTask = async (
-  req: Request & { username?: string; userId?: string },
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -53,7 +53,7 @@ export const createTask = async (
 
 // Get the task with the given ID
 export const getTask = async (
-  req: Request & { username?: string; userId?: string },
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -76,7 +76,7 @@ export const getTask = async (
 
 // Update the task with the given ID
 export const updateTask = async (
-  req: Request & { username?: string; userId?: string },
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -107,7 +107,7 @@ export const updateTask = async (
 
 // Delete the task with the given ID
 export const deleteTask = async (
-  req: Request & { username?: string; userId?: string },
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {

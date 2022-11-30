@@ -86,7 +86,7 @@ export const login = async (
 
 // Issue a new token once the given refresh_token is confirmed valid
 export const refresh = async (
-  req: Request & { username?: string; userId?: string },
+  req: Request,
   res: Response<AuthRespPayload>,
   next: NextFunction
 ) => {
@@ -124,7 +124,7 @@ export const refresh = async (
 
 // Update user profile
 export const updateUser = async (
-  req: Request & { username?: string; userId?: string },
+  req: Request,
   res: Response<AuthRespPayload>,
   next: NextFunction
 ) => {
@@ -166,7 +166,7 @@ export const updateUser = async (
 
 // Delete the user
 export const deleteUser = async (
-  req: Request & { username?: string; userId?: string },
+  req: Request,
   res: Response<IUserDoc | { err: string }>,
   next: NextFunction
 ) => {
