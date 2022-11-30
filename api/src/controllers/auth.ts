@@ -9,6 +9,7 @@ import {
   verifyOptions,
 } from "./jwt_options";
 import { validationResult } from "express-validator";
+import Task from "../models/task";
 
 type AuthRespPayload = {
   username?: string;
@@ -172,6 +173,28 @@ export const updateUser = async (
   } catch (err) {
     console.log(err);
     return next(new HttpError("Failed to update the user profile", 500));
+  }
+};
+
+// Delete the user
+export const deleteUser = async (
+  req: Request & { username?: string; userId?: string },
+  res: Response<IUserDoc | { err: string }>,
+  next: NextFunction
+) => {
+  try {
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
+    }
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return next(new HttpError("User not found", 400));
+    }
+    await Task.deleteMany({ creatorId: req.userId });
+    await user.delete();
+    return res.json({ err: "Successfully deleted the user" });
+  } catch (err) {
+    return next(err);
   }
 };
 

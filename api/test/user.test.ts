@@ -1,3 +1,4 @@
+import request from "supertest";
 import mongoose from "mongoose";
 import User, {
   LOGIN_LOCK_TIME_MS,
@@ -5,6 +6,10 @@ import User, {
   MAX_LOGIN_ATTEMPTS,
 } from "../src/models/auth";
 import { mongoURL, mongoUser, mongoPass, mongoDBName } from "../src/env";
+import app from "../src/app";
+import Task from "../src/models/task";
+
+const agent = request.agent(app);
 
 describe("Test User DB", () => {
   mongoose.Promise = global.Promise;
@@ -117,5 +122,49 @@ describe("Test User DB", () => {
     // old password
     result = await User.getAuthenticated(username, password);
     expect(result).toBe(LoginResult.PASSWORD_INCORRECT);
+  });
+
+  test("Delete user", async () => {
+    const username = "john5";
+    const password = "abcABC123";
+
+    // create a user
+    await agent.post("/auth/signup").send({ username, password }).expect(201);
+
+    // obtain the user ID (for later use)
+    const user = await User.findOne({ username });
+    expect(user).toBeTruthy();
+    const userId = user?._id;
+
+    // obtain a token
+    const res = await agent
+      .post("/auth/login")
+      .send({ username, password })
+      .expect(200);
+    const token = res.body.token;
+
+    // create some dummy tasks
+    await agent
+      .post("/tasks")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: "dummy task0" })
+      .expect(200);
+    await agent
+      .post("/tasks")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: "dummy task1" })
+      .expect(200);
+
+    // delete the user
+    await agent
+      .delete("/auth/user")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200);
+
+    // assert the user is deleted from the DB
+    expect(await User.findOne({ username })).toBeFalsy();
+
+    // assert the related tasks are deleted from the DB
+    expect(await Task.find({ creatorId: userId })).toHaveLength(0);
   });
 });

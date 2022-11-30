@@ -1,7 +1,13 @@
 import { Router } from "express";
 import { body } from "express-validator";
 
-import { login, signup, refresh, updateUser } from "../controllers/auth";
+import {
+  login,
+  signup,
+  refresh,
+  updateUser,
+  deleteUser,
+} from "../controllers/auth";
 import { HttpError } from "../middleware/error";
 import { verifyToken } from "../middleware/verifyToken";
 import User from "../models/auth";
@@ -33,3 +39,4 @@ router.patch(
   strongPassword.optional(),
   updateUser
 );
+router.delete("/user", verifyToken, deleteUser);
