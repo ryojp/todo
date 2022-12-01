@@ -28,7 +28,7 @@ export const AuthContextProvider: React.FC<Props> = (props) => {
   const logoutHandler = () => {
     setToken("");
     setRefreshToken("");
-    navigate("/auth", { replace: true });
+    navigate("/auth/login", { replace: true });
   };
 
   const refreshTokenHandler = (token: string) => {

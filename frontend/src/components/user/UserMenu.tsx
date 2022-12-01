@@ -13,7 +13,10 @@ const UserMenu: React.FC<Props> = (props) => {
 
   const loginItem = (
     <MenuItem color="inherit" onClick={props.onClose}>
-      <Link to="/auth" style={{ textDecoration: "none", color: "inherit" }}>
+      <Link
+        to="/auth/login"
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
         Login
       </Link>
     </MenuItem>
