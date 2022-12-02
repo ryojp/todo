@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import LoginForm from "./components/auth/LoginForm";
 import SignupForm from "./components/auth/SignupForm";
 import Main from "./components/Main";
+import EditUserProfile from "./components/user/EditUserProfile";
 import NavBar from "./layout/NavBar";
 import theme from "./themes/theme";
 
@@ -16,6 +17,7 @@ const App = () => {
         <Routes>
           <Route path="/auth/login" element={<LoginForm />} />
           <Route path="/auth/signup" element={<SignupForm />} />
+          <Route path="/profile" element={<EditUserProfile />} />
           <Route path="/" element={<Main />} />
         </Routes>
       </ThemeProvider>

@@ -1,6 +1,6 @@
 import { Menu, MenuItem } from "@mui/material";
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../../contexts/auth-context";
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
 
 const UserMenu: React.FC<Props> = (props) => {
   const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const loginItem = (
     <MenuItem color="inherit" onClick={props.onClose}>
@@ -34,6 +35,18 @@ const UserMenu: React.FC<Props> = (props) => {
     </MenuItem>
   );
 
+  const profileItem = (
+    <MenuItem
+      color="inherit"
+      onClick={() => {
+        props.onClose();
+        navigate("/profile");
+      }}
+    >
+      Edit Profile
+    </MenuItem>
+  );
+
   return (
     <Menu
       anchorEl={props.anchorEl}
@@ -42,6 +55,7 @@ const UserMenu: React.FC<Props> = (props) => {
     >
       {!authCtx.isLoggedIn && loginItem}
       {authCtx.isLoggedIn && logoutItem}
+      {authCtx.isLoggedIn && profileItem}
     </Menu>
   );
 };
