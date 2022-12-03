@@ -164,6 +164,26 @@ export const updateUser = async (
   }
 };
 
+// Get the user info
+export const getUser = async (
+  req: Request,
+  res: Response<{ username: string } | { err: string }>,
+  next: NextFunction
+) => {
+  try {
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
+    }
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return next(new HttpError("User not found", 400));
+    }
+    return res.json({ username: user.username });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 // Delete the user
 export const deleteUser = async (
   req: Request,

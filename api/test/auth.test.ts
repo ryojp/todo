@@ -286,4 +286,26 @@ describe("Test User DB and /auth endpoints", () => {
       .send({ password: password + "_new" })
       .expect(204);
   });
+
+  test("Success in getting user info at /auth/user", async () => {
+    const username = "john12";
+    const password = "abcABC123";
+
+    // create a user
+    await agent.post("/auth/signup").send({ username, password }).expect(201);
+
+    // obtain a token
+    const _res = await agent
+      .post("/auth/login")
+      .send({ username, password })
+      .expect(200);
+    const token = _res.body.token;
+
+    const res = await agent
+      .get("/auth/user")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200);
+
+    expect(res.body.username).toEqual(username);
+  });
 });

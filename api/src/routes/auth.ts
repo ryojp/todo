@@ -6,6 +6,7 @@ import {
   refresh,
   updateUser,
   deleteUser,
+  getUser,
 } from "../controllers/auth";
 import {
   handleValidationErrors,
@@ -25,6 +26,7 @@ router.post(
 );
 router.post("/login", login);
 router.post("/token", refresh);
+router.get("/user", verifyToken, getUser);
 router.patch(
   "/user",
   verifyToken,
