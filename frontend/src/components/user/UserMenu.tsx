@@ -54,8 +54,8 @@ const UserMenu: React.FC<Props> = (props) => {
       onClose={props.onClose}
     >
       {!authCtx.isLoggedIn && loginItem}
-      {authCtx.isLoggedIn && logoutItem}
       {authCtx.isLoggedIn && profileItem}
+      {authCtx.isLoggedIn && logoutItem}
     </Menu>
   );
 };

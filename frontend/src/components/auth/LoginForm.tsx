@@ -39,7 +39,7 @@ const LoginForm: React.FC = () => {
       client.interceptors.response.eject(refreshIntercept);
       const res = await client.post("/auth/login", data);
       if (res.data.token && res.data.refreshToken) {
-        authCtx.login(res.data.token, res.data.refreshToken);
+        authCtx.login(res.data.token, res.data.refreshToken, res.data.username);
         await loadTasks(res.data.token);
       }
       setIsLoading(false);
