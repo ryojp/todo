@@ -1,11 +1,11 @@
 import React from "react";
 import {
-  Button,
   Card,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
+  CardActions,
+  CardContent,
+  IconButton,
   TextField,
+  Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
@@ -19,6 +19,7 @@ type Props = {
   target: "username" | "password";
   username?: string;
   password?: string;
+  default?: string;
 };
 
 type FormValues = Props;
@@ -53,39 +54,43 @@ const UserProfileItem: React.FC<Props> = (props) => {
 
   if (editing) {
     return (
-      <Card>
-        <ListItem component="form" onSubmit={handleSubmit(endEditing)}>
+      <Card
+        component="form"
+        onSubmit={handleSubmit(endEditing)}
+        sx={{ minWidth: 300 }}
+      >
+        <CardContent>
           <TextField
             required
-            label={capitalize(props.target)}
-            defaultValue={props["target"]}
+            label={"New " + capitalize(props.target)}
+            defaultValue={props.default}
             {...register(props.target, { required: true })}
-            style={{ minWidth: "80%" }}
           />
-          <Button type="submit" style={{ minWidth: "0px" }}>
-            <ListItemIcon style={{ minWidth: "0px" }}>
-              <CheckIcon />
-            </ListItemIcon>
-          </Button>
-          <Button onClick={cancelEditing} style={{ minWidth: "0px" }}>
-            <ListItemIcon style={{ minWidth: "0px" }}>
-              <CloseIcon />
-            </ListItemIcon>
-          </Button>
-        </ListItem>
+        </CardContent>
+        <CardActions>
+          <IconButton type="submit" style={{ minWidth: "0px" }}>
+            <CheckIcon />
+          </IconButton>
+          <IconButton onClick={cancelEditing} style={{ minWidth: "0px" }}>
+            <CloseIcon />
+          </IconButton>
+        </CardActions>
       </Card>
     );
   } else {
     return (
-      <Card>
-        <ListItem>
-          <ListItemText primary={props[props["target"]]} />
-          <Button onClick={startEditing} style={{ minWidth: "0px" }}>
-            <ListItemIcon style={{ minWidth: "0px" }}>
-              <EditIcon />
-            </ListItemIcon>
-          </Button>
-        </ListItem>
+      <Card sx={{ minWidth: 300 }}>
+        <CardContent>
+          <Typography variant="caption">
+            {capitalize(props["target"])}
+          </Typography>
+          <Typography variant="body1">{props[props["target"]]}</Typography>
+        </CardContent>
+        <CardActions>
+          <IconButton onClick={startEditing} style={{ minWidth: "0px" }}>
+            <EditIcon />
+          </IconButton>
+        </CardActions>
       </Card>
     );
   }
