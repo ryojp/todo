@@ -1,19 +1,9 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import AuthContext from "../contexts/auth-context";
+import UserIcon from "../components/user/UserIcon";
 
 const NavBar = () => {
-  const authCtx = useContext(AuthContext);
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -32,21 +22,7 @@ const NavBar = () => {
               ToDo App
             </Link>
           </Typography>
-          {!authCtx.isLoggedIn && (
-            <Button color="inherit">
-              <Link
-                to="/auth"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                Login
-              </Link>
-            </Button>
-          )}
-          {authCtx.isLoggedIn && (
-            <Button color="inherit" onClick={authCtx.logout}>
-              Logout
-            </Button>
-          )}
+          <UserIcon />
         </Toolbar>
       </AppBar>
     </Box>

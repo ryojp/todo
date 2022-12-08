@@ -8,7 +8,7 @@ import {
   signOptions,
   verifyOptions,
 } from "./jwt_options";
-import { validationResult } from "express-validator";
+import Task from "../models/task";
 
 type AuthRespPayload = {
   username?: string;
@@ -28,11 +28,6 @@ export const signup = async (
   res: Response<AuthRespPayload>,
   next: NextFunction
 ) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const msg = errors.array({ onlyFirstError: true })[0]?.msg;
-    return next(new HttpError(msg, 400));
-  }
   try {
     const { username, password } = req.body;
     await User.create({ username, password });
@@ -91,7 +86,7 @@ export const login = async (
 
 // Issue a new token once the given refresh_token is confirmed valid
 export const refresh = async (
-  req: Request & { username?: string; userId?: string },
+  req: Request,
   res: Response<AuthRespPayload>,
   next: NextFunction
 ) => {
@@ -127,15 +122,86 @@ export const refresh = async (
   }
 };
 
-// Get the user with the given username
+// Update user profile
+export const updateUser = async (
+  req: Request,
+  res: Response<AuthRespPayload>,
+  next: NextFunction
+) => {
+  try {
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
+    }
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return next(new HttpError("User not found", 400));
+    }
+
+    switch (req.query?.update) {
+      case "username":
+        const { username } = req.body;
+        if (!username) {
+          return next(new HttpError("Invalid request body", 400));
+        }
+        user.username = username;
+        break;
+      case "password":
+        const { password } = req.body;
+        if (!password) {
+          return next(new HttpError("Invalid request body", 400));
+        }
+        user.password = password;
+        break;
+      default:
+        return next(new HttpError("Invalid update type", 400));
+    }
+
+    await user.save();
+    res.status(204).send();
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError("Failed to update the user profile", 500));
+  }
+};
+
+// Get the user info
 export const getUser = async (
-  req: Request<{ username: string }>,
+  req: Request,
+  res: Response<{ username: string } | { err: string }>,
+  next: NextFunction
+) => {
+  try {
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
+    }
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return next(new HttpError("User not found", 400));
+    }
+    return res.json({ username: user.username });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// Delete the user
+export const deleteUser = async (
+  req: Request,
   res: Response<IUserDoc | { err: string }>,
   next: NextFunction
 ) => {
-  const user = await User.findOne({ username: req.params.username });
-  if (!user) {
-    return next(new HttpError("No such username", 401));
+  try {
+    if (!req.userId) {
+      return next(new HttpError("userId not found from Request", 400));
+    }
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return next(new HttpError("User not found", 400));
+    }
+    await Task.deleteMany({ creatorId: req.userId });
+    await user.delete();
+    return res.json({ err: "Successfully deleted the user" });
+  } catch (err) {
+    return next(err);
   }
-  res.json(user);
 };

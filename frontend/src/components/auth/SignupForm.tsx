@@ -1,58 +1,32 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   Backdrop,
+  Box,
   Button,
   CircularProgress,
   SnackbarCloseReason,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Container, Stack } from "@mui/system";
 import { useForm } from "react-hook-form";
-import AuthContext from "../../contexts/auth-context";
 import { useNavigate } from "react-router-dom";
-import TaskContext from "../../contexts/task-context";
 import useHttp from "../../hooks/useHttp";
-import { Task } from "../../types/task";
 import { AxiosError } from "axios";
 import CustomSnackbar from "../CustomSnackbar";
+import { Link } from "react-router-dom";
 
 type FormValues = {
   username: string;
   password: string;
 };
 
-const AuthForm: React.FC = () => {
+const SignupForm: React.FC = () => {
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm<FormValues>();
-  const [isLoginMode, setIsLoginMode] = useState(true);
-  const authCtx = useContext(AuthContext);
-  const taskCtx = useContext(TaskContext);
   const { client, refreshIntercept } = useHttp();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  const handleLogin = async (data: FormValues) => {
-    setIsLoading(true);
-    try {
-      client.interceptors.response.eject(refreshIntercept);
-      const res = await client.post("/auth/login", data);
-      if (res.data.token && res.data.refreshToken) {
-        authCtx.login(res.data.token, res.data.refreshToken);
-        await loadTasks(res.data.token);
-      }
-      setIsLoading(false);
-      reset({ username: "", password: "" });
-      navigate("/", { replace: true });
-    } catch (err) {
-      console.log(err);
-      if (err instanceof AxiosError) {
-        setErrorMessage(err.response?.data?.error || err.message);
-      } else {
-        setErrorMessage("Unknown error");
-      }
-      setIsLoading(false);
-    }
-  };
 
   const handleSignup = async (data: FormValues) => {
     setIsLoading(true);
@@ -60,7 +34,8 @@ const AuthForm: React.FC = () => {
       client.interceptors.response.eject(refreshIntercept);
       await client.post("/auth/signup", data);
       setIsLoading(false);
-      setIsLoginMode(true); // switch to Login mode
+      reset({ username: "", password: "" });
+      navigate("/auth/login");
     } catch (err) {
       console.log(err);
       if (err instanceof AxiosError) {
@@ -74,37 +49,7 @@ const AuthForm: React.FC = () => {
 
   const submitHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    if (isLoginMode) {
-      handleSubmit(handleLogin)();
-    } else {
-      handleSubmit(handleSignup)();
-    }
-  };
-
-  const toggleAuthModeHandler = () => {
-    setIsLoginMode((prev) => !prev);
-  };
-
-  const loadTasks = async (token: string) => {
-    const authHead = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    setIsLoading(true);
-    try {
-      const res = await client.get<Task[]>("/tasks", authHead);
-      taskCtx.setTasks(res.data);
-    } catch (err) {
-      console.log(err);
-      if (err instanceof AxiosError) {
-        setErrorMessage(err.response?.data?.error || err.message);
-      } else {
-        setErrorMessage("Unknown error");
-      }
-    }
-    setIsLoading(false);
+    handleSubmit(handleSignup)();
   };
 
   const handleCloseSnack = (
@@ -143,13 +88,14 @@ const AuthForm: React.FC = () => {
           {...register("password", { required: true })}
         />
         <Button type="submit" variant="contained">
-          {isLoginMode ? "Log in" : "Sign up"}
+          Sign up
         </Button>
-        <Button type="button" variant="text" onClick={toggleAuthModeHandler}>
-          {isLoginMode
-            ? "Create a new account"
-            : "Login with an existing account"}
-        </Button>
+        <Typography textAlign="center">
+          Already have an account?
+          <Box component="span" sx={{ marginLeft: "2px" }}>
+            <Link to="/auth/login">Sign in</Link>
+          </Box>
+        </Typography>
       </Stack>
       <CustomSnackbar
         severity="error"
@@ -162,4 +108,4 @@ const AuthForm: React.FC = () => {
   );
 };
 
-export default AuthForm;
+export default SignupForm;

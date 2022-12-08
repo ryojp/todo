@@ -5,10 +5,9 @@ import app from "../src/app";
 import { mongoURL, mongoUser, mongoPass, mongoDBName } from "../src/env";
 import User, { IUserDoc } from "../src/models/auth";
 
-// Define an agent to store the cookie (containing JWT)
 const agent = request.agent(app);
 
-describe("Test auth and /tasks endpoints", () => {
+describe("Test /tasks endpoints", () => {
   mongoose.Promise = global.Promise;
 
   // Connect to MongoDB before running each test case
@@ -156,14 +155,5 @@ describe("Test auth and /tasks endpoints", () => {
       .then(async () => {
         expect(await Task.findOne({ _id: task._id })).toBeFalsy();
       });
-  });
-
-  test("Duplicate username for /auth/signup", async () => {
-    await _createUser("testuser5", "asdfASDF1234");
-    const res = await agent
-      .post("/auth/signup")
-      .send({ username: "testuser5", password: "asdfASDF1234" });
-    expect(res.status).toEqual(400);
-    expect(res.body).toHaveProperty("error"); // should receive an error message
   });
 });

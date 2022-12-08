@@ -28,7 +28,7 @@ services:
     volumes:
       - ./frontend:/app/frontend
       - /app/frontend/node_modules
-    command: [ "sleep", "infinity" ]
+    command: [ "npm", "test" ]
     profiles:
       - test
       - all
@@ -115,7 +115,7 @@ services:
       - MONGODB_DBNAME=TestDB
       - JWT_SECRET=${JWT_SECRET:-jwtsecret}
       - NODE_ENV=development
-    command: [ "sleep", "infinity" ]
+    command: [ "npm", "test" ]
     profiles:
       - test
       - all
