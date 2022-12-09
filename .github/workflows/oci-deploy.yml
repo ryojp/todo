@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - main
+    pull_requests:
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the most recent commit on this branch
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Set up ssh
@@ -17,7 +19,7 @@ jobs:
           echo "${{ secrets.OCI_KEYFILE }}" > ~/.ssh/id_rsa
           chmod 400 ~/.ssh/id_rsa
           echo "${{ secrets.OCI_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/known_hosts
 
       - name: Build images and start up containers using docker-compose over SSH
-        run: ssh -i ~/.ssh/id_rsa ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git checkout main; git pull; docker compose -f docker-compose-prod.yml build; docker compose -f docker-compose-prod.yml down; nohup docker compose -f docker-compose-prod.yml up -d"
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.OCI_USERNAME }}@${{ secrets.OCI_HOST }} -t "cd git/todo; git switch main; git pull; docker compose -f docker-compose-prod.yml build; docker compose -f docker-compose-prod.yml down; nohup docker compose -f docker-compose-prod.yml up -d"
