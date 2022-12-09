@@ -10,7 +10,7 @@ This repository also hosts configuration files for GitHub Actions such as
 
 ## Demo
 
-Demo is available at https://ryojp-todo.web.app/ (using Firebase Hosting for their great domain).
+Demo is available at https://todo.ryo-koike.com/
 
 ## How to Run (using Makefile)
 
