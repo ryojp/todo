@@ -8,7 +8,7 @@ jobs:
   preview_okteto:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the most recent commit on this branch
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Set up Okteto context

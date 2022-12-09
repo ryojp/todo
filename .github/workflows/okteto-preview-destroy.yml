@@ -7,8 +7,8 @@ jobs:
   destroy_preview_okteto:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Login
         uses: okteto/login@latest
