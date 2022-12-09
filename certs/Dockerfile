@@ -1,5 +1,7 @@
 FROM alpine:latest
 
+WORKDIR /app/certs
+
 RUN apk update && \
   apk add openssl
 

@@ -29,7 +29,7 @@ services:
     environment:
       DOMAIN: ${DOMAIN}
     volumes:
-      - certificates:/app:delegated
+      - certificates:/app/certs:delegated
 
   frontend:
     restart: always
