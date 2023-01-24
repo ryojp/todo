@@ -51,6 +51,9 @@ const useHttp = () => {
   const refreshIntercept = client.interceptors.response.use(
     (res) => res,
     async (err: AxiosError) => {
+      if (!err.config) {
+        return Promise.reject(err);
+      }
       const originalConfig: AxiosRequestConfig & { _retry?: boolean } =
         err.config;
       if (err.response?.status === 401 && !originalConfig?._retry) {

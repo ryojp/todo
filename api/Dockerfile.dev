@@ -1,4 +1,4 @@
-FROM node:lts-slim
+FROM node:alpine
 WORKDIR /app/api
 RUN chown $(id -u node):$(id -g node) $(pwd)
 USER node
