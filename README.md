@@ -8,10 +8,6 @@ This repository also hosts configuration files for GitHub Actions such as
 - create a preview page in Okteto Cloud
 - deploy the stable code in `main` branch on merging pull-requests
 
-## Demo
-
-Demo is available at https://todo.ryo-koike.com/
-
 ## How to Run (using Makefile)
 
 Makefile provides shortcuts for development commands.
