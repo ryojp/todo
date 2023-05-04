@@ -35,10 +35,16 @@ Likewise, if you want to delete the MongoDB volume when you stop the production 
 
 ### Using Kubernetes
 
-0. Build Docker images and push them to the Docker Hub (`make build` would do this).
+0. (Optional) Build Docker images and push them to the Docker Hub (`make build DOCKER_USER=YourUsernameForDockerHub` would do this).
+   - If you want to use pre-built binaries I uploaded (username: keikekke), you can skip this process.
+   - Otherwise, you will need to replace `keikekke` with your Docker Hub username in all the files in `k8s/` directory to pull images correctly.
+     - Run `find k8s/ -type f -exec sed -i 's/keikekke/YourUsernameForDockerHub/g' {} +` (replace your username) for this
+     - For Mac users, the above command does not work because BSD-style `sed -i` requires backup extension, so run `find k8s/ -type f -exec sed -i '' 's/keikekke/YourUsernameForDockerHub/g' {} +` instead.
 1. Create MongoDB-related secret with: `kubectl create secret generic mongoinfo --from-env-file {env_file_name}`
    - For an example env file, see `.env.dev` file.
-2. Install NGINX Ingress Controller with `kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.1/deploy/static/provider/cloud/deploy.yaml`
+2. Install NGINX Ingress Controller
+   - If you have `helm` installed, run `helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace`
+   - Otherwise, run `kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.1/deploy/static/provider/cloud/deploy.yaml`
    - Installation instruction is available [here](https://kubernetes.github.io/ingress-nginx/deploy/).
    - Some cloud platforms (such as [Okteto Cloud](https://www.okteto.com/)) have their own Ingress controller, so installation on such platforms is not required.
 3. Apply Kubernetes configuration files with: `kubectl apply -f k8s/`.
