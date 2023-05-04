@@ -37,6 +37,11 @@ spec:
                 secretKeyRef:
                   name: mongoinfo
                   key: MONGO_DBNAME
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mongoinfo
+                  key: JWT_SECRET
             - name: _DOMAIN
               valueFrom:
                 secretKeyRef:
