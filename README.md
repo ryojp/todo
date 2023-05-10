@@ -48,6 +48,7 @@ Likewise, if you want to delete the MongoDB volume when you stop the production 
    - Installation instruction is available [here](https://kubernetes.github.io/ingress-nginx/deploy/).
    - Some cloud platforms (such as [Okteto Cloud](https://www.okteto.com/)) have their own Ingress controller, so installation on such platforms is not required.
 3. Apply Kubernetes configuration files with: `kubectl apply -f k8s/`.
+4. Visit [https://localhost](https://localhost) and you will be redirected to the login page if success.
 
 #### Deployment onto [Okteto Cloud](https://www.okteto.com/)
 
