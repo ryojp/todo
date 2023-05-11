@@ -74,13 +74,12 @@ After installation, please visit https://localhost and create a new user with us
 Examples:
 - GET /
 ```sh
-  k6 run --insecure-skip-tls-verify --vus
- 100 --duration 2s -e BASE_URL=https://localhost -
-e -e SLEEP=0.1 k6/test.js
+k6 run --insecure-skip-tls-verify --vus
+ 100 --duration 2s -e BASE_URL=https://localhost -e SLEEP=0.1 k6/test.js
 ```
 - POST /api/auth/login
 ```sh
-  k6 run --insecure-skip-tls-verify --vus
+k6 run --insecure-skip-tls-verify --vus
  100 --duration 2s -e BASE_URL=https://localhost -e TODOPASS=Pass0 -
 e MODE=login -e SLEEP=0.5 k6/test.js
 ```

@@ -31,8 +31,8 @@ spec:
       policies:
         - type: Percent
           value: 100
-          periodSeconds: 5
+          periodSeconds: 15 # does not work maybe
         - type: Pods
           value: 6
-          periodSeconds: 5
+          periodSeconds: 15 # does not work maybe
       selectPolicy: Max
