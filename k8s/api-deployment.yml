@@ -6,11 +6,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      component: api
+      app: api
   template:
     metadata:
       labels:
-        component: api
+        app: api
     spec:
       containers:
         - name: api

@@ -5,7 +5,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    component: api
+    app: api
   ports:
     - port: 4000
       targetPort: 4000
