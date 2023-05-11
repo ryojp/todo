@@ -71,5 +71,16 @@ The official installation manual is [here](https://github.com/grafana/k6#install
 
 After installation, please visit https://localhost and create a new user with username `loadtester` with the password of your choice.
 
-Then, you can run, for example, `k6 run --insecure-skip-tls-verify --vus 200 --duration 10s -e URL=https://localhost/api/auth/login -e TODOPASS={{ThePasswordYouSet}} k6/login.js`  
-This command simulates 200 virtual users trying to log in  for 10 seconds.  
+Examples:
+- GET /
+```sh
+  k6 run --insecure-skip-tls-verify --vus
+ 100 --duration 2s -e BASE_URL=https://localhost -
+e -e SLEEP=0.1 k6/test.js
+```
+- POST /api/auth/login
+```sh
+  k6 run --insecure-skip-tls-verify --vus
+ 100 --duration 2s -e BASE_URL=https://localhost -e TODOPASS=Pass0 -
+e MODE=login -e SLEEP=0.5 k6/test.js
+```

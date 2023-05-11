@@ -25,16 +25,21 @@ export const login = () => {
   check(res, {
     "status was 200": (r) => r.status == 200,
   });
-  sleep(1);
+  sleep(__ENV.SLEEP);
 };
 
 export const index = () => {
   const url = baseUrl;
   http.get(url);
-  // sleep(1);
+  sleep(__ENV.SLEEP);
 };
 
 export default () => {
-  login();
-  // index();
+  switch (__ENV.MODE) {
+    case "login":
+      login();
+      return;
+    default:
+      index();
+  }
 };
