@@ -40,7 +40,7 @@ Likewise, if you want to delete the MongoDB volume when you stop the production 
    - Otherwise, you will need to replace `keikekke` with your Docker Hub username in all the files in `k8s/` directory to pull images correctly.
      - Run `find k8s/ -type f -exec sed -i 's/keikekke/YourUsernameForDockerHub/g' {} +` (replace your username) for this
      - For Mac users, the above command does not work because BSD-style `sed -i` requires backup extension, so run `find k8s/ -type f -exec sed -i '' 's/keikekke/YourUsernameForDockerHub/g' {} +` instead.
-1. Create MongoDB-related secret with: `kubectl create secret generic mongoinfo --from-env-file {env_file_name}`
+1. Create MongoDB-related secret with: `kubectl create secret generic todosecret --from-env-file {env_file_name}`
    - For an example env file, see `.env.dev` file.
 2. Install NGINX Ingress Controller
    - If you have `helm` installed, run `helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace`
@@ -60,6 +60,6 @@ Step-by-step instructions are as follows.
 - Export `KUBECONFIG` variable: `export KUBECONFIG=$HOME/okteto-kube.config:${KUBECONFIG:-$HOME/.kube/config}`.
 - Run `okteto kubeconfig`.
   - This allows you to use your `kubectl` command in your terminal to manipulate k8s on Okteto.
-- Create MongoDB-related secret with: `kubectl create secret generic mongoinfo --from-env-file {env_file_name}`.
+- Create MongoDB-related secret with: `kubectl create secret generic todosecret --from-env-file {env_file_name}`.
   - For an example env file, see `.env.dev` file.
 - Run `okteto deploy`.

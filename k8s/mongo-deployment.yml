@@ -29,15 +29,15 @@ spec:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: mongoinfo
+                  name: todosecret
                   key: MONGO_USERNAME
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mongoinfo
+                  name: todosecret
                   key: MONGO_PASSWORD
             - name: MONGO_INITDB_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: mongoinfo
+                  name: todosecret
                   key: MONGO_DBNAME

@@ -25,27 +25,27 @@ spec:
             - name: MONGODB_USER
               valueFrom:
                 secretKeyRef:
-                  name: mongoinfo
+                  name: todosecret
                   key: MONGO_USERNAME
             - name: MONGODB_PASS
               valueFrom:
                 secretKeyRef:
-                  name: mongoinfo
+                  name: todosecret
                   key: MONGO_PASSWORD
             - name: MONGODB_DBNAME
               valueFrom:
                 secretKeyRef:
-                  name: mongoinfo
+                  name: todosecret
                   key: MONGO_DBNAME
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: mongoinfo
+                  name: todosecret
                   key: JWT_SECRET
             - name: _DOMAIN
               valueFrom:
                 secretKeyRef:
-                  name: mongoinfo
+                  name: todosecret
                   key: DOMAIN
             - name: FRONTEND_URL
               value: https://$(_DOMAIN)
