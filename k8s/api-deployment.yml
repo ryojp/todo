@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: api-deployment
 spec:
-  replicas: 1
+  # replicas: 1
   selector:
     matchLabels:
       app: api
@@ -17,6 +17,13 @@ spec:
           image: keikekke/todo-api
           ports:
             - containerPort: 4000
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "700Mi"
+            requests:
+              cpu: "300m"
+              memory: "500Mi"
           env:
             - name: PORT
               value: "4000"

@@ -63,3 +63,23 @@ Step-by-step instructions are as follows.
 - Create MongoDB-related secret with: `kubectl create secret generic todosecret --from-env-file {env_file_name}`.
   - For an example env file, see `.env.dev` file.
 - Run `okteto deploy`.
+
+
+## Load Testing
+You can use [k6](https://github.com/grafana/k6) to test loads.  
+The official installation manual is [here](https://github.com/grafana/k6#install)
+
+After installation, please visit https://localhost and create a new user with username `loadtester` with the password of your choice.
+
+Examples:
+- GET /
+```sh
+k6 run --insecure-skip-tls-verify --vus
+ 100 --duration 2s -e BASE_URL=https://localhost -e SLEEP=0.1 k6/test.js
+```
+- POST /api/auth/login
+```sh
+k6 run --insecure-skip-tls-verify --vus
+ 100 --duration 2s -e BASE_URL=https://localhost -e TODOPASS=Pass0 -
+e MODE=login -e SLEEP=0.5 k6/test.js
+```

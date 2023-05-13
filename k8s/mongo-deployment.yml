@@ -25,6 +25,13 @@ spec:
             - name: mongo-storage
               mountPath: /data/db
               subPath: mongo
+          resources:
+            limits:
+              cpu: "200m"
+              memory: "800Mi"
+            requests:
+              cpu: "100m"
+              memory: "400Mi"
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:

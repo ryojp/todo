@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend-deployment
 spec:
-  replicas: 1
+  # replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -17,3 +17,10 @@ spec:
           image: keikekke/todo-frontend
           ports:
             - containerPort: 3000
+          resources:
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
+            requests:
+              cpu: "50m"
+              memory: "32Mi"
