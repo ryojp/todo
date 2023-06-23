@@ -1,4 +1,4 @@
-DOCKER_USER = keikekke
+DOCKER_USER = ryojpn
 APP_NAME = todo
 GIT_SHA = $(shell git rev-parse HEAD)
 DOCKER_COMPOSE = docker-compose
@@ -24,13 +24,13 @@ test_single:
 clean:
 	$(DOCKER_COMPOSE) -f docker-compose-dev.yml --profile all down --volumes
 
+buildx:
+	docker buildx build --push --platform=linux/amd64,linux/arm64 -t $(DOCKER_USER)/$(APP_NAME)-api -t $(DOCKER_USER)/$(APP_NAME)-api:$(GIT_SHA) api
+	docker buildx build --push --platform=linux/amd64,linux/arm64 -t $(DOCKER_USER)/$(APP_NAME)-frontend -t $(DOCKER_USER)/$(APP_NAME)-frontend:$(GIT_SHA) frontend
+
 build:
-	docker build -t $(DOCKER_USER)/$(APP_NAME)-api -t $(DOCKER_USER)/$(APP_NAME)-api:$(GIT_SHA) api; \
-	docker push $(DOCKER_USER)/$(APP_NAME)-api; \
-	docker push $(DOCKER_USER)/$(APP_NAME)-api:$(GIT_SHA); \
-	docker build -t $(DOCKER_USER)/$(APP_NAME)-frontend -t $(DOCKER_USER)/$(APP_NAME)-frontend:$(GIT_SHA) frontend
-	docker push $(DOCKER_USER)/$(APP_NAME)-frontend
-	docker push $(DOCKER_USER)/$(APP_NAME)-frontend:$(GIT_SHA)
+	docker build --push -t $(DOCKER_USER)/$(APP_NAME)-api -t $(DOCKER_USER)/$(APP_NAME)-api:$(GIT_SHA) api
+	docker build --push  -t $(DOCKER_USER)/$(APP_NAME)-frontend -t $(DOCKER_USER)/$(APP_NAME)-frontend:$(GIT_SHA) frontend
 
 deploy:
 	kubectl apply -f k8s
