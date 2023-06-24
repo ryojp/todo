@@ -24,15 +24,18 @@ jobs:
     - uses: docker/setup-buildx-action@v2
       with:
         platforms: linux/amd64,linux/arm64
+        driver: docker-container
 
     - name: Build and push the Docker image
-      run: |
-        docker buildx build \
-          --push \
-          --platform=linux/amd64,linux/arm64 \
-          -t ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-api \
-          -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-api:${{ github.sha }} \
-          api
+      uses: docker/build-push-action@v4
+      with:
+        push: true
+        platform: linux/amd64,linux/arm64
+        context: api
+        target: production
+        tags: |
+          ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-api
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-api:${{ github.sha }}
 
   build_frontend:
     runs-on: ubuntu-latest
@@ -45,25 +48,30 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build and push the base image without Buildx (faster)
-      run: |
-        docker build \
-          --output=type=registry \
-          --target todo-frontend-builder
-          -t ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-todo-frontend-builder \
-          -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-todo-frontend-builder:${{ github.sha }} \
-          frontend
-
     - uses: docker/setup-buildx-action@v2
       with:
         platforms: linux/amd64,linux/arm64
+        driver: docker-container
+
+    - name: Build and push the base image without Buildx (faster)
+      uses: docker/build-push-action@v4
+      with:
+        push: true
+        context: frontend
+        target: todo-frontend-builder
+        tags: |
+          ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-frontend-builder
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-frontend-builder:${{ github.sha }}
+        cache-from: type=gha,scope=$GITHUB_REF_NAME-frontend-builder
+        cache-to: type=gha,scope=$GITHUB_REF_NAME-frontend-builder,mode=max
 
     - name: Build and push the production image with Buildx
-      run: |
-        docker buildx build \
-          --push \
-          --target production \
-          --platform=linux/amd64,linux/arm64 \
-          -t ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-frontend \
-          -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-frontend:${{ github.sha }} \
-          frontend
+      uses: docker/build-push-action@v4
+      with:
+        push: true
+        platform: linux/amd64,linux/arm64
+        context: frontend
+        target: production
+        tags: |
+          ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-frontend
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-frontend:${{ github.sha }}
