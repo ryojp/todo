@@ -1,4 +1,4 @@
-name: Run Tests for Frontend and API
+name: Run tests with Docker-Compose and Makefile
 on:
   workflow_dispatch:
   pull_request:
@@ -8,7 +8,7 @@ on:
     branches:
       - main
 jobs:
-  run_npm_test_for_frontend_and_api:
+  npm_test_with_docker_compose:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
