@@ -35,6 +35,8 @@ jobs:
         tags: |
           ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-api
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-api:${{ github.sha }}
+        cache-from: type=gha,scope=$GITHUB_REF_NAME-api
+        cache-to: type=gha,scope=$GITHUB_REF_NAME-api,mode=max
 
   build_frontend:
     runs-on: ubuntu-latest
