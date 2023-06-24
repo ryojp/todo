@@ -5,7 +5,9 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
+FROM --platform=linux/amd64 ryojpn/todo-frontend-builder:latest AS built
+
 FROM nginx AS production
 EXPOSE 3000
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=ryojpn/todo-frontend-builder:latest /frontend/build /usr/share/nginx/html
+COPY --from=built /frontend/build /usr/share/nginx/html
