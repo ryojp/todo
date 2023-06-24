@@ -26,7 +26,8 @@ clean:
 
 buildx:
 	docker buildx build --push --platform=linux/amd64,linux/arm64 -t $(DOCKER_USER)/$(APP_NAME)-api -t $(DOCKER_USER)/$(APP_NAME)-api:$(GIT_SHA) api
-	docker buildx build --push --platform=linux/amd64,linux/arm64 -t $(DOCKER_USER)/$(APP_NAME)-frontend -t $(DOCKER_USER)/$(APP_NAME)-frontend:$(GIT_SHA) frontend
+	docker build --push --target todo-frontend-builder -t $(DOCKER_USER)/$(APP_NAME)-frontend-builder -t $(DOCKER_USER)/$(APP_NAME)-frontend-builder:$(GIT_SHA) frontend/
+	docker buildx build --push --target production --platform=linux/amd64,linux/arm64 -t $(DOCKER_USER)/$(APP_NAME)-frontend -t $(DOCKER_USER)/$(APP_NAME)-frontend:$(GIT_SHA) frontend
 
 build:
 	docker build --push -t $(DOCKER_USER)/$(APP_NAME)-api -t $(DOCKER_USER)/$(APP_NAME)-api:$(GIT_SHA) api

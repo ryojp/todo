@@ -1,11 +1,11 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS todo-frontend-builder
 WORKDIR /frontend
 COPY ./package.json ./package-lock.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx
+FROM nginx AS production
 EXPOSE 3000
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /frontend/build /usr/share/nginx/html
+COPY --from=ryojpn/todo-frontend-builder:latest /frontend/build /usr/share/nginx/html
