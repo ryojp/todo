@@ -1,0 +1,27 @@
+name: Build and Push to Docker Hub
+on:
+  push:
+    branches:
+    - main
+env:
+  REPOSITORY: todo
+jobs:
+  example_matrix:
+    strategy:
+      matrix:
+        target:
+        - frontend
+        - api
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and push the Docker image
+      run: |
+        docker buildx build --push --platform=linux/amd64,linux/arm64 -t ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-${{ matrix.target }} -t ${{ secrets.DOCKERHUB_USERNAME }}/$(APP_NAME)-${{ matrix.target }}:${{ github.sha }} ${{ matrix.target }}
