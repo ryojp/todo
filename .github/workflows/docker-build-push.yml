@@ -48,7 +48,7 @@ jobs:
     - name: Build and push the base image without Buildx (faster)
       run: |
         docker build \
-          --push \
+          --output=type=registry \
           --target todo-frontend-builder
           -t ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-todo-frontend-builder \
           -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-todo-frontend-builder:${{ github.sha }} \
