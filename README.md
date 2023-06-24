@@ -48,7 +48,8 @@ Likewise, if you want to delete the MongoDB volume when you stop the production 
    ```sh
    cp .env.dev .env
    vim .env  # set secure passwords
-   kubectl create secret generic todosecret --from-env-file .env
+   kubectl create ns todo
+   kubectl -n todo create secret generic todosecret --from-env-file .env
    ```
 
 2. Install NGINX Ingress Controller
@@ -62,6 +63,11 @@ Likewise, if you want to delete the MongoDB volume when you stop the production 
    ```
 
 4. Visit [https://localhost](https://localhost) and you will be redirected to the login page if success.
+
+5. Cleanup:
+   ```sh
+   kubectl delete ns todo
+   ```
 
 
 ## Load Testing

@@ -1,28 +1,43 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: mongo-deployment
+  name: mongo
+  namespace: todo
+  labels:
+    app.kubernetes.io/name: mongo
 spec:
-  replicas: 1
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: mongo
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+  namespace: todo
+  labels:
+    app.kubernetes.io/name: mongo
+spec:
   selector:
     matchLabels:
-      app: mongo
+      app.kubernetes.io/name: mongo
+  serviceName: mongo
+  replicas: 1
   template:
     metadata:
       labels:
-        app: mongo
+        app.kubernetes.io/name: mongo
     spec:
-      volumes:
-        - name: mongo-storage
-          persistentVolumeClaim:
-            claimName: mongo-persistent-volume-claim
       containers:
         - name: mongo
           image: mongo
           ports:
             - containerPort: 27017
           volumeMounts:
-            - name: mongo-storage
+            - name: storage
               mountPath: /data/db
               subPath: mongo
           resources:
@@ -48,3 +63,12 @@ spec:
                 secretKeyRef:
                   name: todosecret
                   key: MONGO_DBNAME
+  volumeClaimTemplates:
+    - metadata:
+        name: storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
