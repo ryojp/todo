@@ -6,7 +6,7 @@ on:
 env:
   REPOSITORY: todo
 jobs:
-  example_matrix:
+  buildx:
     strategy:
       matrix:
         target:
@@ -22,6 +22,15 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    - uses: docker/setup-buildx-action@v2
+      with:
+        platforms: linux/amd64,linux/arm64
+
     - name: Build and push the Docker image
       run: |
-        docker buildx build --push --platform=linux/amd64,linux/arm64 -t ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-${{ matrix.target }} -t ${{ secrets.DOCKERHUB_USERNAME }}/$(APP_NAME)-${{ matrix.target }}:${{ github.sha }} ${{ matrix.target }}
+        docker buildx build \
+          --push \
+          --platform=linux/amd64,linux/arm64 \
+          -t ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-${{ matrix.target }} \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-${{ matrix.target }}:${{ github.sha }} \
+          ${{ matrix.target }}
