@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cj-__HPA__-__HOURMIN__
+  namespace: __NAMESPACE__
+  labels:
+    target: __HPA__
+    app.kubernetes.io/name: cj-__HPA__-__HOURMIN__
+spec:
+  schedule: __CRON__   # Timezone UTC(+0000)
+  startingDeadlineSeconds: 120
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            sidecar.istio.io/inject: "false"
+        spec:
+          serviceAccountName: hpa-scheduler
+          containers:
+          - name: hpa-scheduler
+            image: bitnami/kubectl:1.26
+            command:
+            - /bin/sh
+            - -c
+            - |
+              kubectl -n __NAMESPACE__ patch hpa/__HPA__ -p '{"spec":{"minReplicas":__MIN__, "maxReplicas":__MAX__}}'
+          restartPolicy: OnFailure

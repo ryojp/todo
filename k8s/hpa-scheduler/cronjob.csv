@@ -1,0 +1,7 @@
+NAMESPACE,HPA,HOUR,MINUTE,MIN_REPLICAS,MAX_REPLICAS
+todo,frontend,11,55,3,10
+todo,frontend,13,10,1,10
+todo,api,05,55,3,10
+todo,api,11,55,6,10
+todo,api,13,10,3,10
+todo,api,22,35,1,10
