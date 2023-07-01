@@ -13,6 +13,7 @@ const agent = request.agent(app);
 
 describe("Test User DB and /auth endpoints", () => {
   mongoose.Promise = global.Promise;
+  mongoose.set('strictQuery', true);
 
   // Connect to MongoDB before running each test case
   beforeEach(async () => {

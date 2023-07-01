@@ -10,31 +10,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
     ports:
-      - "3000:3000"
+      - 3000:3000
     environment:
       - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:4000/}
     volumes:
       - ./frontend:/app/frontend
       - /app/frontend/node_modules
-    profiles:
-      - dev
-      - all
-
-  frontend-test:
-    restart: always
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./frontend:/app/frontend
-      - /app/frontend/node_modules
-    command: [ "npm", "test" ]
-    profiles:
-      - test
-      - all
 
   mongo:
-    image: "mongo:6.0"
+    image: mongo:6.0
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME:-devuser}
@@ -42,15 +26,12 @@ services:
       - MONGO_INITDB_DATABASE=${MONGO_DBNAME:-TodoDB}
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh mongodb://mongo/test --quiet
-      interval: 5s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
+      interval: 2s
+      timeout: 2s
+      retries: 10
+      start_period: 2s
     volumes:
       - mongo_data_dev:/data/db
-    profiles:
-      - dev
-      - all
 
   api:
     depends_on:
@@ -74,48 +55,4 @@ services:
       - PORT=4000
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
     ports:
-      - "4000:4000"
-    profiles:
-      - dev
-      - all
-
-  mongo-test:
-    image: "mongo:6.0"
-    restart: always
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=testuser
-      - MONGO_INITDB_ROOT_PASSWORD=testpass
-      - MONGO_INITDB_DATABASE=TestDB
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://mongo-test/test --quiet
-      interval: 5s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    profiles:
-      - test
-      - all
-
-  api-test:
-    depends_on:
-      mongo-test:
-        condition: service_healthy
-    restart: always
-    build:
-      context: ./api
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /app/api/node_modules
-      - /app/api/dist
-      - ./api:/app/api
-    environment:
-      - MONGODB_URL=mongodb://mongo-test/
-      - MONGODB_USER=testuser
-      - MONGODB_PASS=testpass
-      - MONGODB_DBNAME=TestDB
-      - JWT_SECRET=${JWT_SECRET:-jwtsecret}
-      - NODE_ENV=development
-    command: [ "npm", "test" ]
-    profiles:
-      - test
-      - all
+      - 4000:4000

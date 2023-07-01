@@ -1,5 +1,5 @@
 // NODE_ENV
-export const nodeEnv = process.env.NODE_ENV as "production" | "development";
+export const nodeEnv = process.env.NODE_ENV as "production" | "development" | "test";
 
 // MongoDB
 export const mongoURL = process.env.MONGODB_URL as string;

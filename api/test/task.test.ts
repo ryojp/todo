@@ -9,6 +9,7 @@ const agent = request.agent(app);
 
 describe("Test /tasks endpoints", () => {
   mongoose.Promise = global.Promise;
+  mongoose.set('strictQuery', true);
 
   // Connect to MongoDB before running each test case
   // Create a test user and login

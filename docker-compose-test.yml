@@ -1,0 +1,33 @@
+version: "3.9"
+volumes:
+  mongo_data_test:
+
+
+services:
+  frontend:
+    restart: always
+    command:
+    - npm
+    - test
+
+  mongo:
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=testuser
+      - MONGO_INITDB_ROOT_PASSWORD=testpass
+      - MONGO_INITDB_DATABASE=TestDB
+    volumes:
+      - mongo_data_test:/data/db
+
+  api:
+    restart: always
+    environment:
+      # - MONGODB_URL=mongodb://mongo/
+      - MONGODB_USER=testuser
+      - MONGODB_PASS=testpass
+      - MONGODB_DBNAME=TestDB
+      - JWT_SECRET=${JWT_SECRET:-jwtsecret}
+      - NODE_ENV=test
+    command:
+    - npm
+    - test
