@@ -1,7 +1,7 @@
 DOCKER_USER = ryojpn
 APP_NAME = todo
 GIT_SHA = $(shell git rev-parse HEAD)
-DOCKER_COMPOSE = docker-compose
+DOCKER_COMPOSE = docker compose
 
 dev:
 	$(DOCKER_COMPOSE) -f docker-compose-dev.yml up --remove-orphans -d --build
