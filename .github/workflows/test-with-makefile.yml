@@ -14,5 +14,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - uses: docker/setup-buildx-action@v2
+        with:
+          driver: docker-container
+
+      - name: Build the [api] image with cache
+        uses: docker/build-push-action@v4
+        with:
+          context: api
+          file: api/Dockerfile.dev
+          cache-from: type=gha,scope=$GITHUB_REF_NAME-api-dev
+          cache-to: type=gha,scope=$GITHUB_REF_NAME-api-dev,mode=max
+
+      - name: Build the [frontend] image with cache
+        uses: docker/build-push-action@v4
+        with:
+          context: frontend
+          file: frontend/Dockerfile.dev
+          cache-from: type=gha,scope=$GITHUB_REF_NAME-frontend-dev
+          cache-to: type=gha,scope=$GITHUB_REF_NAME-frontend-dev,mode=max
+
       - name: Build and run the tests
         run: make test_single
