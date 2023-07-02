@@ -27,7 +27,7 @@ jobs:
           cache-to: type=gha,scope=$GITHUB_REF_NAME-frontend-dev,mode=max
 
       - name: Start frontend
-        run: docker compose -f docker-compose-dev.yml -f docker-compose-test-single.yml up -d --remove-orphans --build frontend
+        run: docker compose -f docker-compose-dev.yml -f docker-compose-test-single.yml up -d --remove-orphans frontend
 
       - name: Run test
         run: docker compose -f docker-compose-dev.yml exec -T frontend npm test -- --watchAll=false
@@ -51,7 +51,7 @@ jobs:
           cache-to: type=gha,scope=$GITHUB_REF_NAME-api-dev,mode=max
 
       - name: Start api
-        run: docker compose -f docker-compose-dev.yml -f docker-compose-test-single.yml up -d --remove-orphans --build api
+        run: docker compose -f docker-compose-dev.yml -f docker-compose-test-single.yml up -d --remove-orphans api
 
       - name: Run test
         run: docker compose -f docker-compose-dev.yml exec -T api npm test -- --watchAll=false
