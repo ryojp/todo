@@ -8,7 +8,31 @@ on:
     branches:
       - main
 jobs:
-  npm_test_with_docker_compose:
+  test_frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: docker/setup-buildx-action@v2
+        with:
+          driver: docker-container
+
+      - name: Build the [frontend] image with cache
+        uses: docker/build-push-action@v4
+        with:
+          context: frontend
+          file: frontend/Dockerfile.dev
+          cache-from: type=gha,scope=$GITHUB_REF_NAME-frontend-dev
+          cache-to: type=gha,scope=$GITHUB_REF_NAME-frontend-dev,mode=max
+
+      - name: Start frontend
+        run: docker-compose -f docker-compose-dev.yml -f docker-compose-test-single.yml up -d --remove-orphans --build frontend
+
+      - name: Run test
+        run: docker-compose -f docker-compose-dev.yml exec -T frontend npm test -- --watchAll=false
+
+  test_api:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,13 +50,8 @@ jobs:
           cache-from: type=gha,scope=$GITHUB_REF_NAME-api-dev
           cache-to: type=gha,scope=$GITHUB_REF_NAME-api-dev,mode=max
 
-      - name: Build the [frontend] image with cache
-        uses: docker/build-push-action@v4
-        with:
-          context: frontend
-          file: frontend/Dockerfile.dev
-          cache-from: type=gha,scope=$GITHUB_REF_NAME-frontend-dev
-          cache-to: type=gha,scope=$GITHUB_REF_NAME-frontend-dev,mode=max
+      - name: Start api
+        run: docker-compose -f docker-compose-dev.yml -f docker-compose-test-single.yml up -d --remove-orphans --build api
 
-      - name: Build and run the tests
-        run: make test_single
+      - name: Run test
+        run: docker-compose -f docker-compose-dev.yml exec -T api npm test -- --watchAll=false
