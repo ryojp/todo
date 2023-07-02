@@ -88,3 +88,33 @@ k6 run --insecure-skip-tls-verify --vus
  100 --duration 2s -e BASE_URL=https://localhost -e TODOPASS=Pass0 -
 e MODE=login -e SLEEP=0.5 k6/test.js
 ```
+
+
+## Chore
+### How to update packages
+
+1. Start the containers
+  ```sh
+  make
+  ```
+
+2. Get inside `api` container
+  ```sh
+  docker compose -f docker-compose-dev.yml exec -it api sh
+  ```
+
+3. Update `package.json`
+  ```sh
+  npx npm-check-updates -u
+  ```
+
+4. Update `package-lock.json`
+  ```sh
+  npm i
+  ```
+
+5. Exit from `api` container and run tests
+  ```sh
+  make down
+  make test_single
+  ```

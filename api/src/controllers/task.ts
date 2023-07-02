@@ -122,7 +122,7 @@ export const deleteTask = async (
     if (doc.creatorId.toString() !== req.userId) {
       return next(new HttpError("Forbidden", 403));
     }
-    await doc.delete();
+    await Task.deleteOne({_id: req.params.taskId});
     return res.json({ message: "Successfully deleted the task" });
   } catch (err) {
     return next(err);

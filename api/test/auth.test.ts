@@ -13,7 +13,7 @@ const agent = request.agent(app);
 
 describe("Test User DB and /auth endpoints", () => {
   mongoose.Promise = global.Promise;
-  mongoose.set('strictQuery', true);
+  mongoose.set("strictQuery", true);
 
   // Connect to MongoDB before running each test case
   beforeEach(async () => {
@@ -29,11 +29,9 @@ describe("Test User DB and /auth endpoints", () => {
   });
 
   // Drop MongoDB and close connection after running each test case
-  afterEach((done) => {
-    User.deleteMany({}, async () => {
-      await mongoose.disconnect();
-      done();
-    });
+  afterEach(async () => {
+    await User.deleteMany({});
+    await mongoose.disconnect();
   });
 
   test("Authentication just after creation", async () => {

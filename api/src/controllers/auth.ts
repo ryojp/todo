@@ -199,7 +199,8 @@ export const deleteUser = async (
       return next(new HttpError("User not found", 400));
     }
     await Task.deleteMany({ creatorId: req.userId });
-    await user.delete();
+    await User.deleteOne({_id: req.userId});
+
     return res.json({ err: "Successfully deleted the user" });
   } catch (err) {
     return next(err);
