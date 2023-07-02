@@ -21,6 +21,7 @@ jobs:
       - name: Build the [frontend] image with cache
         uses: docker/build-push-action@v4
         with:
+          load: true
           context: frontend
           file: frontend/Dockerfile.dev
           cache-from: type=gha,scope=$GITHUB_REF_NAME-frontend-dev
@@ -45,6 +46,7 @@ jobs:
       - name: Build the [api] image with cache
         uses: docker/build-push-action@v4
         with:
+          load: true
           context: api
           file: api/Dockerfile.dev
           cache-from: type=gha,scope=$GITHUB_REF_NAME-api-dev
