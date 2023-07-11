@@ -46,13 +46,13 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           load: true
-          context: api
-          file: api/Dockerfile.dev
+          context: backend/nodejs
+          file: backend/nodejs/Dockerfile.dev
           cache-from: type=gha,scope=$GITHUB_REF_NAME-api-dev
           cache-to: type=gha,scope=$GITHUB_REF_NAME-api-dev,mode=max
 
       - name: Start api
-        run: docker compose -f docker-compose-dev.yml -f docker-compose-test-single.yml up -d --remove-orphans api
+        run: docker compose -f docker-compose-dev.yml -f docker-compose-test-single.yml up -d --remove-orphans nodejs
 
       - name: Run test
-        run: docker compose -f docker-compose-dev.yml exec -T api npm test -- --watchAll=false
+        run: docker compose -f docker-compose-dev.yml exec -T nodejs npm test -- --watchAll=false

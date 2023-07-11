@@ -31,15 +31,12 @@ vim .env.prod  # set secure passwords
 docker compose -f docker-compose-prod.yml --env-file .env.prod up --build
 ```
 
+After this, please visit https://localhost (self-signed certificate is created by `docker-compose-prod.yml`, so don't be surprised if prompted a certificate warning)
+
 #### Stopping
 ```sh
 docker compose -f docker-compose-prod.yml down
 ```
-
-One pitfall is that the docker volume for MongoDB (`mongo_data`) is shared between `docker-compose-dev.yml` and `docker-compose-prod.yml`.  
-So, if you have run `make` to start up the develpment environment before, you have to set the same DB environments as before to connect to the MongoDB.  
-Or, if you are okay to re-create the volume, run `make clean` to clean up the volume and run `docker compose -f docker-compose-prod.yml --env-file .env.prod up --build` to start up the production server.  
-Likewise, if you want to delete the MongoDB volume when you stop the production server, run `docker compose -f docker-compose-prod.yml down --volumes`
 
 
 ### Option 2: Kubernetes
@@ -98,9 +95,9 @@ e MODE=login -e SLEEP=0.5 k6/test.js
   make
   ```
 
-2. Get inside `api` container
+2. Get inside `nodejs` container
   ```sh
-  docker compose -f docker-compose-dev.yml exec -it api sh
+  docker compose -f docker-compose-dev.yml exec -it nodejs sh
   ```
 
 3. Update `package.json`
@@ -113,7 +110,7 @@ e MODE=login -e SLEEP=0.5 k6/test.js
   npm i
   ```
 
-5. Exit from `api` container and run tests
+5. Exit from `nodejs` container and run tests
   ```sh
   make down
   make test_single

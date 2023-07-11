@@ -6,7 +6,7 @@ services:
     - sleep
     - infinity
 
-  api:
+  nodejs:
     command:
     - sleep
     - infinity
