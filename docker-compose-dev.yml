@@ -33,18 +33,18 @@ services:
     volumes:
       - mongo_data_dev:/data/db
 
-  api:
+  nodejs:
     depends_on:
       mongo:
         condition: service_healthy
     restart: always
     build:
-      context: ./api
+      context: ./backend/nodejs
       dockerfile: Dockerfile.dev
     volumes:
-      - /app/api/node_modules
-      - /app/api/dist
-      - ./api:/app/api
+      - /app/nodejs/node_modules
+      - /app/nodejs/dist
+      - ./backend/nodejs:/app/nodejs
     environment:
       - MONGODB_URL=mongodb://mongo/
       - MONGODB_USER=${MONGO_USERNAME:-devuser}

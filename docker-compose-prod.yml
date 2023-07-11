@@ -9,7 +9,7 @@ services:
     depends_on:
       certs:
         condition: service_completed_successfully
-      api:
+      nodejs:
         condition: service_started
       frontend:
         condition: service_started
@@ -55,13 +55,13 @@ services:
     volumes:
       - mongo_data:/data/db
 
-  api:
+  nodejs:
     depends_on:
       mongo:
         condition: service_healthy
     restart: always
     build:
-      context: ./api
+      context: ./backend/nodejs
       dockerfile: Dockerfile
     environment:
       - MONGODB_URL=${MONGO_URL:-mongodb://mongo/}

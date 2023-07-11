@@ -28,7 +28,7 @@ jobs:
       with:
         push: true
         platforms: linux/amd64,linux/arm64
-        context: api
+        context: backend/nodejs
         tags: |
           ${{secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-api
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOSITORY }}-api:${{ github.sha }}
